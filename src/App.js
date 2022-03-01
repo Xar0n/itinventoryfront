@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { HashRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
 import './scss/style.scss'
 import axios from 'axios'
 
@@ -39,7 +39,9 @@ class App extends Component {
       <HashRouter>
         <React.Suspense fallback={loading}>
           <Switch>
-            <Route exact path="/login" name="Login Page" render={(props) => <Login {...props} />} />
+            <Route path="/login" name="Login Page">
+              {localStorage.getItem('auth_token') ? <Redirect to="/" /> : <Login />}
+            </Route>
             <Route
               exact
               path="/register"

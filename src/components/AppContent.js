@@ -27,11 +27,7 @@ const AppContent = () => {
               )
             )
           })}
-          {localStorage.getItem('auth_token') ? (
-            <Redirect to="/dashboard" />
-          ) : (
-            <Redirect to="/login" />
-          )}
+          <Redirect to="/dashboard" />
         </Switch>
       </Suspense>
     </CContainer>

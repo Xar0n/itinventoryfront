@@ -31,7 +31,8 @@ const AppHeader = () => {
         localStorage.removeItem('auth_token')
         localStorage.removeItem('auth_name')
         Swal.fire('Авторизация', res.data.message, 'success')
-        history.push('/')
+        history.push('/login')
+        window.location.reload()
       } else {
       }
     })
