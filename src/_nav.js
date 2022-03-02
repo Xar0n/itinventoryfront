@@ -6,6 +6,7 @@ import {
   cilChartPie,
   cilCursor,
   cilDrop,
+  cilLaptop,
   cilNotes,
   cilPencil,
   cilPuzzle,
@@ -24,6 +25,12 @@ const _nav = [
       color: 'info',
       text: 'NEW',
     },
+  },
+  {
+    component: CNavItem,
+    name: 'Оборудование',
+    to: '/equipments',
+    icon: <CIcon icon={cilLaptop} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,
