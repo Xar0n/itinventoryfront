@@ -1,4 +1,5 @@
 import React from 'react'
+//import { Equipments } from './views/equipments'
 
 const Equipments = React.lazy(() => import('./views/equipments/Equipments'))
 
