@@ -6,6 +6,7 @@ import {
   cilChartPie,
   cilCursor,
   cilDrop,
+  cilInbox,
   cilLaptop,
   cilNotes,
   cilPencil,
@@ -29,8 +30,14 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Оборудование',
-    to: '/equipments',
+    to: '/equipment',
     icon: <CIcon icon={cilLaptop} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Объекты',
+    to: '/object',
+    icon: <CIcon icon={cilInbox} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,

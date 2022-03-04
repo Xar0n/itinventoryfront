@@ -1,2 +1,3 @@
-import Equipments from './Equipments'
-export { Equipments }
+import Equipment from './Equipment/Equipment'
+import StoreEquipment from './StoreEquipment/StoreEquipment'
+export { Equipment, StoreEquipment }

@@ -1,7 +1,9 @@
 import React from 'react'
-//import { Equipments } from './views/equipments'
 
-const Equipments = React.lazy(() => import('./views/equipments/Equipments'))
+const Object = React.lazy(() => import('./views/objects/Object/ObjectE'))
+const Equipment = React.lazy(() => import('./views/equipments/Equipment/Equipment'))
+const StoreEquipment = React.lazy(() => import('./views/equipments/StoreEquipment/StoreEquipment'))
+const StoreObject = React.lazy(() => import('./views/objects/StoreObject/StoreObject'))
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -56,7 +58,10 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Главная' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/equipments', name: 'Оборудование', component: Equipments },
+  { path: '/equipment', name: 'Оборудование', component: Equipment },
+  { path: '/object', name: 'Объекты', component: Object },
+  { path: '/store-equipment', name: 'Создать оборудование', component: StoreEquipment },
+  { path: '/store-object', name: 'Создать объект', component: StoreObject },
   { path: '/theme', name: 'Theme', component: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },
