@@ -2,8 +2,29 @@ import React, { useEffect, useState } from 'react'
 import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/react'
 import axios from 'axios'
 import TableEquipment from './TableEquipment'
+import Swal from 'sweetalert2'
 
 const Equipment = () => {
+  const credentialsButtonClick = (e) => {
+    e.preventDefault()
+    const data = {
+      //name: loginInput.name,
+    }
+    axios({
+      url: 'api/equipments/export',
+      method: 'GET',
+      responseType: 'blob',
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'blob' }))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'equipments.xlsx')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    })
+  }
+  const [searchFilter, setSearchFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const [equpipmentsList, setEqupipmentsList] = useState([])
   useEffect(() => {
@@ -16,7 +37,6 @@ const Equipment = () => {
       setLoading(false)
     })
   }, [])
-
   const columns = React.useMemo(
     () => [
       {
@@ -25,18 +45,22 @@ const Equipment = () => {
           {
             Header: '№',
             accessor: 'id',
+            disableFilters: true,
           },
           {
             Header: 'Название',
             accessor: 'equipment.config_item.name',
+            disableFilters: true,
           },
           {
             Header: 'Инвентарный номер',
             accessor: 'equipment.inventory_number.number',
+            disableFilters: true,
           },
           {
             Header: 'Штрих-код',
             accessor: 'barcode.code',
+            disableFilters: true,
           },
         ],
       },
@@ -46,22 +70,27 @@ const Equipment = () => {
           {
             Header: 'Организация',
             accessor: 'equipment.organization.name',
+            disableFilters: false,
           },
           {
             Header: 'Адрес',
             accessor: 'equipment.room.address.name',
+            disableFilters: false,
           },
           {
             Header: 'Хранилище',
             accessor: 'equipment.room.storage',
+            disableFilters: false,
           },
           {
             Header: 'Доп.инф.',
             accessor: 'location',
+            disableFilters: true,
           },
           {
             Header: 'Сотрудник',
             accessor: 'employee.full_name',
+            disableFilters: false,
           },
         ],
       },
@@ -71,14 +100,17 @@ const Equipment = () => {
           {
             Header: 'Вид',
             accessor: 'equipment.view.name',
+            disableFilters: true,
           },
           {
             Header: 'Сорт',
             accessor: 'equipment.grade.name',
+            disableFilters: true,
           },
           {
             Header: 'Группа',
             accessor: 'equipment.group.name',
+            disableFilters: true,
           },
         ],
       },
@@ -88,7 +120,6 @@ const Equipment = () => {
   return (
     <>
       <CCard className="mb-5">
-        {/*<CCardHeader>Оборудование</CCardHeader>*/}
         <CCardBody>
           <CRow className={'mb-5'}>
             <CCol sm={5}>
@@ -101,7 +132,12 @@ const Equipment = () => {
                 <CButton variant={'outline'} color="dark" className="mx-1">
                   Инвентаризация
                 </CButton>
-                <CButton variant={'outline'} color="dark" className="mx-1">
+                <CButton
+                  onClick={credentialsButtonClick}
+                  variant={'outline'}
+                  color="dark"
+                  className="mx-1"
+                >
                   Учетные данные
                 </CButton>
                 <CButton variant={'outline'} color="dark" className="mx-1">
@@ -110,7 +146,11 @@ const Equipment = () => {
               </CButtonGroup>
             </CCol>
           </CRow>
-          <TableEquipment columns={columns} data={equpipmentsList} />
+          <TableEquipment
+            columns={columns}
+            data={equpipmentsList}
+            setSearchFilter={setSearchFilter}
+          />
         </CCardBody>
       </CCard>
     </>
