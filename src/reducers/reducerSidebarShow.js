@@ -1,6 +1,3 @@
-import { createStore } from 'redux'
-import rootReducer from './reducers/rootReducer'
-
 const SET = 'set'
 
 const initialState = {
@@ -17,9 +14,4 @@ const changeState = (state = initialState, { type, ...rest }) => {
   }
 }
 
-const store = createStore(
-  changeState,
-  /* preloadedState, */ +window.__REDUX_DEVTOOLS_EXTENSION__ &&
-    window.__REDUX_DEVTOOLS_EXTENSION__(),
-)
-export default store
+export default changeState
