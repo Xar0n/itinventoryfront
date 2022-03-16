@@ -24,16 +24,14 @@ const Equipment = () => {
       document.body.removeChild(link)
     })
   }
-  const [searchFilter, setSearchFilter] = useState('')
   const [loading, setLoading] = useState(true)
-  const [equpipmentsList, setEqupipmentsList] = useState([])
+  const [equipmentList, setEquipmentList] = useState([])
   useEffect(() => {
     axios.get('/api/equipments').then((response) => {
       if (response.status === 200) {
         // eslint-disable-next-line react-hooks/rules-of-hooks,react-hooks/exhaustive-deps
-        setEqupipmentsList(response.data.equipments)
+        setEquipmentList(response.data.equipments)
       }
-      //console.log(equpipmentsList)
       setLoading(false)
     })
   }, [])
@@ -117,6 +115,14 @@ const Equipment = () => {
     ],
     [],
   )
+
+  if (loading) {
+    return (
+      <div className="pt-3 text-center">
+        <div className="sk-spinner sk-spinner-pulse"></div>
+      </div>
+    )
+  }
   return (
     <>
       <CCard className="mb-5">
@@ -129,28 +135,24 @@ const Equipment = () => {
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButtonGroup className="float-end">
-                <CButton variant={'outline'} color="dark" className="mx-1">
+                <CButton variant={'outline'} color="dark" className="mx-1 btn-select">
                   Инвентаризация
                 </CButton>
                 <CButton
                   onClick={credentialsButtonClick}
                   variant={'outline'}
                   color="dark"
-                  className="mx-1"
+                  className="mx-1 btn-select"
                 >
                   Учетные данные
                 </CButton>
-                <CButton variant={'outline'} color="dark" className="mx-1">
+                <CButton variant={'outline'} color="dark" className="mx-1 btn-select">
                   Импортировать
                 </CButton>
               </CButtonGroup>
             </CCol>
           </CRow>
-          <TableEquipment
-            columns={columns}
-            data={equpipmentsList}
-            setSearchFilter={setSearchFilter}
-          />
+          <TableEquipment columns={columns} data={equipmentList} />
         </CCardBody>
       </CCard>
     </>

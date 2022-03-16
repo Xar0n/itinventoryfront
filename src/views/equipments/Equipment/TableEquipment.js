@@ -17,13 +17,15 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import { cibAddthis, cilPlus } from '@coreui/icons'
 import React, { useEffect, useState } from 'react'
 import Select from 'react-select'
 import _, { isNull } from 'underscore'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import store, { setSearchFilter } from '../../../store'
 
 function arrUnique(arr) {
   var cleaned = []
@@ -109,7 +111,8 @@ function SelectColumnFilter({ column: { filterValue, setFilter, preFilteredRows,
 }
 
 // eslint-disable-next-line react/prop-types
-function TableEquipment({ columns, data, setSearchFilter }) {
+function TableEquipment({ columns, data }) {
+  const history = useHistory()
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const defaultColumn = React.useMemo(
     () => ({
@@ -117,6 +120,7 @@ function TableEquipment({ columns, data, setSearchFilter }) {
     }),
     [],
   )
+  const dispath = useDispatch()
   const {
     getTableProps,
     getTableBodyProps,
@@ -142,7 +146,7 @@ function TableEquipment({ columns, data, setSearchFilter }) {
   const { globalFilter } = state
   let objectEmployee = objectByHeader(allColumns, 'Сотрудник')
   let objectOrganization = objectByHeader(allColumns, 'Организация')
-  setSearchFilter(globalFilter)
+  dispath(setSearchFilter('4566'))
   return (
     <>
       <CRow className={'mb-3'}>
@@ -173,7 +177,7 @@ function TableEquipment({ columns, data, setSearchFilter }) {
               </CDropdownMenu>
             </CDropdown>
             <CDropdown className="float-end mx-1">
-              <CDropdownToggle variant={'outline'} color="dark">
+              <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Поля
               </CDropdownToggle>
               <CDropdownMenu>
@@ -191,14 +195,17 @@ function TableEquipment({ columns, data, setSearchFilter }) {
               </CDropdownMenu>
             </CDropdown>
             <div className="float-end mx-1">
-              <Link className="btn btn-outline-dark px-4 float-end" to={'store-equipment'}>
+              <Link
+                className="btn btn-outline-dark px-4 float-end btn-select"
+                to={'equipment/store'}
+              >
                 <CIcon icon={cilPlus} />
               </Link>
             </div>
           </CButtonGroup>
         </CCol>
       </CRow>
-      <CTable bordered {...getTableProps()}>
+      <CTable bordered {...getTableProps()} className={'selectTable'}>
         <CTableHead>
           {headerGroups.map((headerGroup) => (
             // eslint-disable-next-line react/jsx-key
@@ -221,7 +228,14 @@ function TableEquipment({ columns, data, setSearchFilter }) {
             prepareRow(row)
             return (
               // eslint-disable-next-line react/jsx-key
-              <CTableRow scope="row" {...row.getRowProps()}>
+              <CTableRow
+                className={'link'}
+                scope="row"
+                {...row.getRowProps()}
+                onClick={() => {
+                  history.push(`equipment/${row.values['id']}`)
+                }}
+              >
                 {row.cells.map((cell) => {
                   return (
                     // eslint-disable-next-line react/jsx-key

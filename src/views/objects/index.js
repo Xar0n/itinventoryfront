@@ -1,2 +1,3 @@
 import ObjectE from './Object/ObjectE'
-export { ObjectE }
+import CreateObject from './CreateObject/CreateObject'
+export { ObjectE, CreateObject }

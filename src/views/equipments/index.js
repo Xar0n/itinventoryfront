@@ -1,3 +1,4 @@
 import Equipment from './Equipment/Equipment'
-import StoreEquipment from './StoreEquipment/StoreEquipment'
-export { Equipment, StoreEquipment }
+import CreateEquipment from './CreateEquipment/CreateEquipment'
+import ViewEquipment from './ViewEquipment/ViewEquipment'
+export { Equipment, CreateEquipment, ViewEquipment }

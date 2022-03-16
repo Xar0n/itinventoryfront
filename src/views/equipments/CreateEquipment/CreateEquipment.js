@@ -12,7 +12,7 @@ import {
 } from '@coreui/react'
 import Select from 'react-select'
 
-const StoreEquipment = () => {
+const CreateEquipment = () => {
   const [location, setLocation] = useState('')
   const [selectedOption, setSelectedOption] = useState(null)
   const [selectedInventoryNumber, setSelectedInventoryNumber] = useState(null)
@@ -69,4 +69,4 @@ const StoreEquipment = () => {
     </>
   )
 }
-export default StoreEquipment
+export default CreateEquipment

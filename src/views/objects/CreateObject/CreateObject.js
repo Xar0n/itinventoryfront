@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import {
   CButton,
+  CButtonGroup,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CForm,
   CFormInput,
   CFormLabel,
-  CInputGroup,
-  CInputGroupText,
   CRow,
 } from '@coreui/react'
 import Select from 'react-select'
 import axios from 'axios'
+import CreatableSelect from 'react-select/creatable'
+import Swal from 'sweetalert2'
 
 function addKeyValue(obj, key, data) {
   obj[key] = data
 }
 
-const StoreObject = () => {
-  const [selectedOption, setSelectedOption] = useState([])
+const CreateObject = () => {
   const [inventoryNumberList, setInventoryNumberList] = useState([])
   const [viewList, setViewList] = useState([])
   const [gradeList, setGradeList] = useState([])
@@ -29,6 +28,7 @@ const StoreObject = () => {
   const [addressList, setAddressList] = useState([])
   const [storageList, setStorageList] = useState([])
   const [nameList, setNameList] = useState([])
+  const [errorList, setErrorList] = useState([])
   const [objectInput, setObjectInput] = useState({
     inventory_number_id: '',
     name_id: '',
@@ -40,15 +40,15 @@ const StoreObject = () => {
     storage_id: '',
     count: '',
   })
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-  ]
 
   const handleSelect = (value, action) => {
     setObjectInput({ ...objectInput, [action.name]: value.value })
     console.log(objectInput)
+  }
+
+  const handleSelectChange = (value, action) => {
+    console.log(value)
+    console.log(action)
   }
 
   const handleInput = (e) => {
@@ -59,6 +59,25 @@ const StoreObject = () => {
 
   const storeObjectSubmit = (e) => {
     e.preventDefault()
+    const formData = new FormData()
+    formData.append('inventory_number_id', objectInput.inventory_number_id)
+    formData.append('name_id', objectInput.name_id)
+    formData.append('view_id', objectInput.view_id)
+    formData.append('grade_id', objectInput.grade_id)
+    formData.append('group_id', objectInput.group_id)
+    formData.append('organization_id', objectInput.organization_id)
+    formData.append('address_id', objectInput.address_id)
+    formData.append('storage_id', objectInput.storage_id)
+    formData.append('count', objectInput.count)
+    axios.post('api/objects', formData).then((res) => {
+      if (res === 200) {
+        Swal.fire('Создание объекта', res.data.message, 'success')
+        setErrorList([])
+      } else {
+        Swal.fire('Создание объекта', res.data.message, 'warning')
+        setErrorList(res.data.errors)
+      }
+    })
   }
 
   useEffect(() => {
@@ -107,7 +126,7 @@ const StoreObject = () => {
       }
     })
   }, [])
-
+  let filteredStorageList = storageList.filter((o) => o.link === objectInput.address_id)
   return (
     <>
       <CCard className="mb-5">
@@ -138,6 +157,7 @@ const StoreObject = () => {
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectInventoryNumber'} className="col-sm-2 col-form-label">
                 Наименование
+                <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
                 <Select
@@ -161,6 +181,22 @@ const StoreObject = () => {
                   isClearable
                   placeholder="Введите или выберите вид"
                   onChange={handleSelect}
+                  options={viewList}
+                />
+              </div>
+            </CRow>
+            <CRow className="mb-3">
+              <CFormLabel htmlFor={'selectView'} className="col-sm-2 col-form-label">
+                Вид Creatable
+              </CFormLabel>
+              <div className="col-sm-10">
+                <CreatableSelect
+                  name="view_id"
+                  id="selectView"
+                  isClearable
+                  placeholder="Введите или выберите вид"
+                  onChange={handleSelect}
+                  onInputChange={handleSelectChange}
                   options={viewList}
                 />
               </div>
@@ -198,6 +234,7 @@ const StoreObject = () => {
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectOrganization'} className="col-sm-2 col-form-label">
                 Организация
+                <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
                 <Select
@@ -213,6 +250,7 @@ const StoreObject = () => {
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectAddress'} className="col-sm-2 col-form-label">
                 Адрес
+                <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
                 <Select
@@ -228,6 +266,7 @@ const StoreObject = () => {
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
                 Склад / кабинет
+                <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
                 <Select
@@ -236,13 +275,14 @@ const StoreObject = () => {
                   isClearable
                   placeholder="Выберите склад/кабинет"
                   onChange={handleSelect}
-                  options={storageList.filter((o) => o.link === objectInput.address_id)}
+                  options={filteredStorageList}
                 />
               </div>
             </CRow>
-            <CRow className="mb-3">
+            <CRow className="mb-5">
               <CFormLabel htmlFor={'inputCount'} className="col-sm-2 col-form-label">
                 Количество
+                <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
                 <CFormInput
@@ -259,17 +299,17 @@ const StoreObject = () => {
 
             {/*TODO Добавить отображение справа float-left*/}
             <CRow className="mb-3">
-              <div className="col-sm-1">
-                <CButton type={'submit'} color="dark" variant="outline" className="px-4">
-                  Создать
-                </CButton>
-              </div>
-              <div className="col-sm-1">
-                {/*TODO Заменить на Link*/}
-                <CButton type={'submit'} color="dark" variant="outline" className="px-4">
-                  Отменить
-                </CButton>
-              </div>
+              <CCol sm={12} className="d-none d-md-block">
+                <CButtonGroup className="float-end">
+                  <CButton type={'submit'} color="dark" variant="outline" className="mx-4">
+                    Создать
+                  </CButton>
+                  {/*TODO Заменить на Link*/}
+                  <CButton color="dark" variant="outline">
+                    Отменить
+                  </CButton>
+                </CButtonGroup>
+              </CCol>
             </CRow>
           </CForm>
         </CCardBody>
@@ -277,4 +317,4 @@ const StoreObject = () => {
     </>
   )
 }
-export default StoreObject
+export default CreateObject

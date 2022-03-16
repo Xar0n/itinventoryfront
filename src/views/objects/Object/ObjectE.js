@@ -10,7 +10,6 @@ const ObjectE = () => {
       if (response.status === 200) {
         // eslint-disable-next-line react-hooks/rules-of-hooks,react-hooks/exhaustive-deps
         setObjectsList(response.data.objects)
-        console.log(objectsList)
       }
     })
   }, [])

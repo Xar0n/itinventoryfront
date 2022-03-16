@@ -1,1 +1,17 @@
 // Here you can add other styles
+.selectTable .link:hover {
+  cursor: pointer;
+  background: #f89530;
+  td {
+    color: white;
+  }
+}
+
+.btn-select {
+  --cui-btn-active-bg: #f89530;
+  --cui-btn-hover-bg: #f89530;
+}
+
+.main-color {
+  color: #f89530;
+}

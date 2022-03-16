@@ -4,7 +4,6 @@ import { CContainer, CSpinner } from '@coreui/react'
 
 // routes config
 import routes from '../routes'
-import { Equipments } from '../views/equipments'
 
 const AppContent = () => {
   return (
