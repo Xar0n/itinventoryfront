@@ -66,13 +66,14 @@ const Login = () => {
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={8}>
+          <CCol md={6}>
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
                   <CForm onSubmit={loginSubmit}>
-                    <h1>Авторизация</h1>
-                    <p className="text-medium-emphasis">Войдите в ваш аккаунт</p>
+                    <h1 className={'text-center'}>Инвентаризация ИТ-активов</h1>
+                    <h2 className={'text-center'}>Авторизация</h2>
+                    <p className="text-medium-emphasis text-center">Войдите в ваш аккаунт</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
@@ -84,7 +85,7 @@ const Login = () => {
                         value={loginInput.name}
                       />
                     </CInputGroup>
-                    <CInputGroup className="mb-3">
+                    <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
@@ -96,17 +97,14 @@ const Login = () => {
                         value={loginInput.password}
                       />
                     </CInputGroup>
-                    <CInputGroup className="mb-4">
-                      <Select
-                        defaultValue={selectedOption}
-                        onChange={setSelectedOption}
-                        options={options}
-                        isMulti={true}
-                      />
-                    </CInputGroup>
-                    <CRow>
-                      <CCol xs={6}>
-                        <CButton type={'submit'} color="dark" variant="outline" className="px-4">
+                    <CRow className="justify-content-center">
+                      <CCol xs={2}>
+                        <CButton
+                          type={'submit'}
+                          color="dark"
+                          variant="outline"
+                          className="px-4 btn-select"
+                        >
                           Войти
                         </CButton>
                       </CCol>

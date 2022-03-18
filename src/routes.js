@@ -6,17 +6,25 @@ const CreateEquipment = React.lazy(() =>
   import('./views/equipments/CreateEquipment/CreateEquipment'),
 )
 const ViewEquipment = React.lazy(() => import('./views/equipments/ViewEquipment/ViewEquipment'))
+const EditEquipment = React.lazy(() => import('./views/equipments/EditEquipment/EditEquipment'))
 const CreateObject = React.lazy(() => import('./views/objects/CreateObject/CreateObject'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
+const CreateList = React.lazy(() => import('./views/lists/CreateList/CreateList'))
+
 const routes = [
   { path: '/', exact: true, name: 'Главная' },
-  { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/dashboard', name: 'Статистика', component: Dashboard },
   { path: '/object', name: 'Объекты', component: Object, exact: true },
-  { path: '/object/store', name: 'Создать объект', component: CreateObject },
+  { path: '/object/create', name: 'Создание', component: CreateObject },
   { path: '/equipment', name: 'Оборудование', component: Equipment, exact: true },
-  { path: '/equipment/store', name: 'Создать оборудование', component: CreateEquipment },
-  { path: '/equipment/:id', name: 'Просмотр', component: ViewEquipment },
+  { path: '/equipment/create', name: 'Создание', component: CreateEquipment },
+  { path: '/equipment/edit/:id', name: 'Редактирование', component: EditEquipment },
+  { path: '/equipment/:id', exact: true, name: 'Просмотр', component: ViewEquipment },
+
+  { path: '/list', name: 'Ведомости', component: Equipment, exact: true },
+  { path: '/list/create', name: 'Создание', component: CreateList, exact: true },
+  { path: '/list/:id', exact: true, name: 'Просмотр', component: ViewEquipment },
 ]
 
 export default routes

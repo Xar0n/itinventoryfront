@@ -82,7 +82,7 @@ function TableObject({ columns, data }) {
               </CDropdownMenu>
             </CDropdown>
             <div className="float-end mx-1">
-              <Link className="btn btn-outline-dark px-4 float-end" to={'store-object'}>
+              <Link className="btn btn-outline-dark px-4 float-end" to={'/object/create'}>
                 <CIcon icon={cilPlus} />
               </Link>
             </div>

@@ -14,12 +14,19 @@ import Select from 'react-select'
 import axios from 'axios'
 import CreatableSelect from 'react-select/creatable'
 import Swal from 'sweetalert2'
+import { Link, useHistory } from 'react-router-dom'
 
 function addKeyValue(obj, key, data) {
   obj[key] = data
 }
 
+function isEmpty(value) {
+  return typeof value === 'string' && value.trim() === ''
+}
+
 const CreateObject = () => {
+  const history = useHistory()
+  const [loading, setLoading] = useState(true)
   const [inventoryNumberList, setInventoryNumberList] = useState([])
   const [viewList, setViewList] = useState([])
   const [gradeList, setGradeList] = useState([])
@@ -31,10 +38,15 @@ const CreateObject = () => {
   const [errorList, setErrorList] = useState([])
   const [objectInput, setObjectInput] = useState({
     inventory_number_id: '',
+    inventory_number_id_create: '',
     name_id: '',
+    name_id_create: '',
     view_id: '',
+    view_id_create: '',
     grade_id: '',
+    grade_id_create: '',
     group_id: '',
+    group_id_create: '',
     organization_id: '',
     address_id: '',
     storage_id: '',
@@ -42,13 +54,11 @@ const CreateObject = () => {
   })
 
   const handleSelect = (value, action) => {
-    setObjectInput({ ...objectInput, [action.name]: value.value })
-    console.log(objectInput)
-  }
-
-  const handleSelectChange = (value, action) => {
-    console.log(value)
-    console.log(action)
+    if (action.action === 'create-option') {
+      setObjectInput({ ...objectInput, [action.name + '_create']: value.value, [action.name]: '' })
+    } else if (action.action === 'select-option') {
+      setObjectInput({ ...objectInput, [action.name]: value.value, [action.name + '_create']: '' })
+    }
   }
 
   const handleInput = (e) => {
@@ -60,11 +70,32 @@ const CreateObject = () => {
   const storeObjectSubmit = (e) => {
     e.preventDefault()
     const formData = new FormData()
-    formData.append('inventory_number_id', objectInput.inventory_number_id)
-    formData.append('name_id', objectInput.name_id)
-    formData.append('view_id', objectInput.view_id)
-    formData.append('grade_id', objectInput.grade_id)
-    formData.append('group_id', objectInput.group_id)
+    const inventory_number_id = objectInput.inventory_number_id
+    const inventory_number_id_create = objectInput.inventory_number_id_create
+    const name_id = objectInput.name_id
+    const name_id_create = objectInput.name_id_create
+    const view_id = objectInput.view_id
+    const view_id_create = objectInput.view_id_create
+    const grade_id = objectInput.grade_id
+    const grade_id_create = objectInput.grade_id_create
+    const group_id = objectInput.group_id
+    const group_id_create = objectInput.group_id_create
+    if (isEmpty(inventory_number_id) && !isEmpty(inventory_number_id_create))
+      formData.append('inventory_number_id_create', inventory_number_id_create)
+    else if (!isEmpty(inventory_number_id))
+      formData.append('inventory_number_id', inventory_number_id)
+    if (isEmpty(name_id) && !isEmpty(name_id_create))
+      formData.append('name_id_create', name_id_create)
+    else if (!isEmpty(name_id)) formData.append('name_id', name_id)
+    if (isEmpty(view_id) && !isEmpty(view_id_create))
+      formData.append('view_id_create', view_id_create)
+    else if (!isEmpty(view_id)) formData.append('view_id', view_id)
+    if (isEmpty(grade_id) && !isEmpty(grade_id_create))
+      formData.append('grade_id_create', grade_id_create)
+    else if (!isEmpty(grade_id)) formData.append('grade_id', grade_id)
+    if (isEmpty(group_id) && !isEmpty(grade_id_create))
+      formData.append('group_id_create', group_id_create)
+    else if (!isEmpty(group_id)) formData.append('group_id', group_id)
     formData.append('organization_id', objectInput.organization_id)
     formData.append('address_id', objectInput.address_id)
     formData.append('storage_id', objectInput.storage_id)
@@ -73,6 +104,7 @@ const CreateObject = () => {
       if (res === 200) {
         Swal.fire('Создание объекта', res.data.message, 'success')
         setErrorList([])
+        history.push('/object')
       } else {
         Swal.fire('Создание объекта', res.data.message, 'warning')
         setErrorList(res.data.errors)
@@ -123,10 +155,19 @@ const CreateObject = () => {
           return addKeyValue(storage, 'label', storage.storage)
         })
         setStorageList(storages)
+        setLoading(false)
       }
     })
   }, [])
   let filteredStorageList = storageList.filter((o) => o.link === objectInput.address_id)
+
+  if (loading) {
+    return (
+      <div className="pt-3 text-center">
+        <div className="sk-spinner sk-spinner-pulse"></div>
+      </div>
+    )
+  }
   return (
     <>
       <CCard className="mb-5">
@@ -144,7 +185,7 @@ const CreateObject = () => {
                 Инвентарный номер
               </CFormLabel>
               <div className="col-sm-10">
-                <Select
+                <CreatableSelect
                   name="inventory_number_id"
                   id="selectInventoryNumber"
                   isClearable
@@ -160,7 +201,7 @@ const CreateObject = () => {
                 <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
-                <Select
+                <CreatableSelect
                   name="name_id"
                   id="selectName"
                   isClearable
@@ -175,28 +216,12 @@ const CreateObject = () => {
                 Вид
               </CFormLabel>
               <div className="col-sm-10">
-                <Select
-                  name="view_id"
-                  id="selectView"
-                  isClearable
-                  placeholder="Введите или выберите вид"
-                  onChange={handleSelect}
-                  options={viewList}
-                />
-              </div>
-            </CRow>
-            <CRow className="mb-3">
-              <CFormLabel htmlFor={'selectView'} className="col-sm-2 col-form-label">
-                Вид Creatable
-              </CFormLabel>
-              <div className="col-sm-10">
                 <CreatableSelect
                   name="view_id"
                   id="selectView"
                   isClearable
                   placeholder="Введите или выберите вид"
                   onChange={handleSelect}
-                  onInputChange={handleSelectChange}
                   options={viewList}
                 />
               </div>
@@ -206,7 +231,7 @@ const CreateObject = () => {
                 Сорт
               </CFormLabel>
               <div className="col-sm-10">
-                <Select
+                <CreatableSelect
                   name="grade_id"
                   id="selectGrade"
                   isClearable
@@ -221,7 +246,7 @@ const CreateObject = () => {
                 Группа
               </CFormLabel>
               <div className="col-sm-10">
-                <Select
+                <CreatableSelect
                   name="group_id"
                   id="selectGroup"
                   isClearable
@@ -245,6 +270,9 @@ const CreateObject = () => {
                   onChange={handleSelect}
                   options={organizationList}
                 />
+                {errorList?.organization_id?.map(function (error) {
+                  return <li key={error}>{error}</li>
+                })}
               </div>
             </CRow>
             <CRow className="mb-3">
@@ -277,6 +305,9 @@ const CreateObject = () => {
                   onChange={handleSelect}
                   options={filteredStorageList}
                 />
+                {errorList?.storage_id?.map(function (error) {
+                  return <li key={error}>{error}</li>
+                })}
               </div>
             </CRow>
             <CRow className="mb-5">
@@ -294,20 +325,25 @@ const CreateObject = () => {
                   name={'count'}
                   onChange={handleInput}
                 />
+                {errorList?.count?.map(function (error) {
+                  return <li key={error}>{error}</li>
+                })}
               </div>
             </CRow>
-
-            {/*TODO Добавить отображение справа float-left*/}
             <CRow className="mb-3">
               <CCol sm={12} className="d-none d-md-block">
-                <CButtonGroup className="float-end">
-                  <CButton type={'submit'} color="dark" variant="outline" className="mx-4">
+                <CButtonGroup className="float-start">
+                  <CButton
+                    type={'submit'}
+                    color="dark"
+                    variant="outline"
+                    className="mx-0 btn-select"
+                  >
                     Создать
                   </CButton>
-                  {/*TODO Заменить на Link*/}
-                  <CButton color="dark" variant="outline">
+                  <Link to={`/object`} className="btn btn-outline-dark mx-4 btn-select">
                     Отменить
-                  </CButton>
+                  </Link>
                 </CButtonGroup>
               </CCol>
             </CRow>

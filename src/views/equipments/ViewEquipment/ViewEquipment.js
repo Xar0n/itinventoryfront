@@ -64,11 +64,11 @@ const ViewEquipment = (props) => {
           <h5 className="mb-3">Основная информация</h5>
           <CRow className="mb-3">
             <div className="col-sm-2">Инвентарный номер:</div>
-            <div className="col-sm-10">{equipment.equipment.inventory_number.number}</div>
+            <div className="col-sm-10">{equipment.equipment.inventory_number?.number}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Штрих-код:</div>
-            <div className="col-sm-10">{equipment.barcode.code}</div>
+            <div className="col-sm-10">{equipment.barcode?.code}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Наименование:</div>
@@ -88,7 +88,7 @@ const ViewEquipment = (props) => {
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Сотрудник:</div>
-            <div className="col-sm-10">{equipment.employee.full_name}</div>
+            <div className="col-sm-10">{equipment.employee?.full_name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Дата добавления:</div>

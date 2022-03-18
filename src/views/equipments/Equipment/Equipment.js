@@ -3,8 +3,10 @@ import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/rea
 import axios from 'axios'
 import TableEquipment from './TableEquipment'
 import Swal from 'sweetalert2'
+import { useHistory } from 'react-router-dom'
 
 const Equipment = () => {
+  const history = useHistory()
   const credentialsButtonClick = (e) => {
     e.preventDefault()
     const data = {
@@ -23,6 +25,11 @@ const Equipment = () => {
       link.click()
       document.body.removeChild(link)
     })
+  }
+
+  const inventoryButtonClick = (e) => {
+    e.preventDefault()
+    history.push('/list/create')
   }
   const [loading, setLoading] = useState(true)
   const [equipmentList, setEquipmentList] = useState([])
@@ -135,7 +142,12 @@ const Equipment = () => {
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButtonGroup className="float-end">
-                <CButton variant={'outline'} color="dark" className="mx-1 btn-select">
+                <CButton
+                  onClick={inventoryButtonClick}
+                  variant={'outline'}
+                  color="dark"
+                  className="mx-1 btn-select"
+                >
                   Инвентаризация
                 </CButton>
                 <CButton
