@@ -76,15 +76,15 @@ const ViewEquipment = (props) => {
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Вид:</div>
-            <div className="col-sm-10">{equipment.equipment.view.name}</div>
+            <div className="col-sm-10">{equipment.equipment.view?.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Сорт:</div>
-            <div className="col-sm-10">{equipment.equipment.grade.name}</div>
+            <div className="col-sm-10">{equipment.equipment.grade?.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Группа:</div>
-            <div className="col-sm-10">{equipment.equipment.group.name}</div>
+            <div className="col-sm-10">{equipment.equipment.group?.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Сотрудник:</div>

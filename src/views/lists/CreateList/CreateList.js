@@ -8,6 +8,7 @@ import {
   CCol,
   CFormInput,
   CFormLabel,
+  CFormSelect,
   CInputGroup,
   CInputGroupText,
   CRow,
@@ -16,31 +17,71 @@ import Select from 'react-select'
 import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import DatePicker, { registerLocale } from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import ru from 'date-fns/locale/ru'
+import CreatableSelect from 'react-select/creatable'
+
+function addKeyValue(obj, key, data) {
+  obj[key] = data
+}
 
 const CreateList = (props) => {
-  const [equipment, setEquipment] = useState([])
-  const [loading, setLoading] = useState(true)
+  registerLocale('ru', ru)
+  const [loading, setLoading] = useState(false)
   const history = useHistory()
+  useEffect(() => {}, [])
+  const [createDate, setCreateDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(new Date())
+  const [baseDate, setBaseDate] = useState(new Date())
+  const [selectOrganization, setSelectOrganization] = useState([])
+  const [selectAddress, setSelectAddress] = useState([])
+  const [selectStorage, setSelectStorage] = useState([])
+  const [selectInventoryReason, setSelectInventoryReason] = useState([])
+  const [selectMol, setSelectMol] = useState([])
+  const [selectCommission, setSelectCommission] = useState([])
+  const [inventoryReasonList, setInventoryReasonList] = useState([])
+  const [commissionList, setCommissionList] = useState([])
+  const [molList, setMolList] = useState([])
+
+  const address_id = 1
+  const organization_id = 1
+  const storage_id = 1
+
   useEffect(() => {
-    let isMounted = true
-    // eslint-disable-next-line react/prop-types
-    const equipment_id = props.match.params.id
-    axios.get(`/api/equipments/${equipment_id}`).then((response) => {
-      if (isMounted) {
-        if (response.data.status === 200) {
-          setEquipment(response.data.equipment)
-          setLoading(false)
-        } else if (response.data.status === 404) {
-          history.push('/equipment')
-          Swal.fire('Просмотр оборудования', response.data.message, 'warning')
-        }
+    axios.get(`api/one-address/${address_id}`).then((res) => {
+      if (res.data.status === 200) {
+        setSelectAddress(res.data.address)
       }
     })
-    return () => {
-      isMounted = false
-    }
-    // eslint-disable-next-line react/prop-types
-  }, [props.match.params.id, history])
+    axios.get(`api/one-organization/${organization_id}`).then((res) => {
+      if (res.data.status === 200) {
+        setSelectOrganization(res.data.organization)
+      }
+    })
+    axios.get(`api/one-storage/${storage_id}`).then((res) => {
+      if (res.data.status === 200) {
+        let storage = res.data.storage
+        storage['label'] = storage['storage']
+        setSelectStorage(storage)
+      }
+    })
+    axios.get(`api/all-inventory-reason/`).then((res) => {
+      if (res.data.status === 200) {
+        setInventoryReasonList(res.data.inventory_reasons)
+      }
+    })
+    axios.get(`api/all-employee/${organization_id}`).then((res) => {
+      if (res.data.status === 200) {
+        let mol = res.data.employee
+        mol.map(function (o) {
+          return addKeyValue(o, 'label', o.full_name)
+        })
+        setMolList(mol)
+      }
+    })
+  }, [])
 
   if (loading) {
     return (
@@ -57,35 +98,51 @@ const CreateList = (props) => {
           <CRow>
             <CCol sm={12}>
               <h4 id="equipment-header" className="card-title mb-5">
-                Создание ведомости
+                Создать ведомость
               </h4>
             </CCol>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Номер:</div>
-            <div className="col-sm-8">
-              <Select
-                name="inventory_number_id"
-                id="selectInventoryNumber"
-                value={{
-                  label: equipment.equipment.inventory_number.number,
-                }}
-                isClearable
-                isDisabled={true}
+            <div className="col-sm-2">
+              Номер:<span className={'main-color'}>*</span>
+            </div>
+            <div className="col-sm-4">
+              <CFormInput
+                type={'text'}
+                id={'inputID'}
+                placeholder="Введите номер"
+                aria-label="Количество"
+                aria-describedby="id"
+                name={'id'}
+                //onChange={handleInput}
+              />
+            </div>
+            <div className="col-sm-auto">
+              от:<span className={'main-color'}>*</span>
+            </div>
+            <div className="col-sm-auto">
+              <DatePicker
+                selected={createDate}
+                onChange={(date) => setCreateDate(date)}
+                showTimeSelect
+                className={'form-control'}
+                dateFormat="d MMMM, yyyy h:mm aa"
+                locale="ru"
               />
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">МОЛ:</div>
+            <div className="col-sm-2">
+              МОЛ:<span className={'main-color'}>*</span>
+            </div>
             <div className="col-sm-8">
               <Select
+                isMulti
                 name="barcode_id"
                 id="selectBarcode"
                 isClearable
-                value={{
-                  label: equipment.barcode.code,
-                }}
-                placeholder="Введите или выберите штрих-код"
+                options={molList}
+                placeholder="Выберите материально ответственных лиц"
               />
             </div>
           </CRow>
@@ -93,96 +150,156 @@ const CreateList = (props) => {
             <div className="col-sm-2">Комиссия:</div>
             <div className="col-sm-8">
               <Select
-                name="name_id"
-                id="selectName"
+                isMulti
+                name="comission_id"
+                id="selectComission"
                 isClearable
-                value={{
-                  label: equipment.equipment.config_item.name,
-                }}
-                isDisabled={true}
+                placeholder={'Выберите членов комиссии инвентаризации'}
               />
             </div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Период с:</div>
-            <div className="col-sm-8">
-              <Select
-                name="name_id"
-                id="selectName"
-                isClearable
-                value={{
-                  label: equipment.equipment.view.name,
-                }}
-                isDisabled={true}
+            <div className="col-sm-auto">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                selectsStart
+                showTimeSelect
+                className={'form-control'}
+                startDate={startDate}
+                endDate={endDate}
+                dateFormat="d MMMM, yyyy h:mm aa"
+                locale="ru"
+              />
+            </div>
+            <div className="col-sm-auto">по:</div>
+            <div className="col-sm-auto">
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                selectsEnd
+                showTimeSelect
+                className={'form-control'}
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                dateFormat="d MMMM, yyyy h:mm aa"
+                locale="ru"
               />
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Основание:</div>
-            <div className="col-sm-8">
-              <Select
-                name="grade_id"
-                id="selectGrade"
-                isClearable
-                value={{
-                  label: equipment.equipment.grade.name,
-                }}
-                isDisabled={true}
+            <div className="col-sm-2">
+              Основание:<span className={'main-color'}>*</span>
+            </div>
+            <div className="col-sm-auto">
+              <CFormSelect>
+                <option>Выберите основание</option>
+                <option value="1">Приказ</option>
+                <option value="2">Постановление</option>
+                <option value="3">Распоряжение</option>
+              </CFormSelect>
+            </div>
+            <div className="col-sm-auto">
+              №:<span className={'main-color'}>*</span>
+            </div>
+            <div className="col-sm-auto">
+              <CFormInput
+                type={'text'}
+                id={'inputBaseNumber'}
+                placeholder="Введите номер основания"
+                aria-label="Номер основания"
+                aria-describedby="baseNumber"
+                name={'baseNumber'}
+                //onChange={handleInput}
+              />
+            </div>
+            <div className="col-sm-auto">
+              от:<span className={'main-color'}>*</span>
+            </div>
+            <div className="col-sm-auto">
+              <DatePicker
+                selected={baseDate}
+                onChange={(date) => setBaseDate(date)}
+                showTimeSelect
+                className={'form-control'}
+                dateFormat="d MMMM, yyyy h:mm aa"
+                locale="ru"
               />
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Организация:</div>
+            <div className="col-sm-2">
+              Организация:<span className={'main-color'}>*</span>
+            </div>
             <div className="col-sm-8">
               <Select
+                options={[selectOrganization]}
+                value={selectOrganization}
                 name="organization_id"
                 id="selectOrganization"
                 isClearable
-                value={{
-                  label: equipment.equipment.organization.name,
-                }}
                 isDisabled={true}
               />
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Адрес:</div>
+            <div className="col-sm-2">
+              Адрес:<span className={'main-color'}>*</span>
+            </div>
             <div className="col-sm-8">
               <Select
+                options={[selectAddress]}
+                value={selectAddress}
                 name="address_id"
                 id="selectAddress"
                 isClearable
-                value={{
-                  label: equipment.equipment.room.address.name,
-                }}
+                isDisabled={true}
+              />
+            </div>
+          </CRow>
+          <CRow className="mb-3">
+            <div className="col-sm-2">
+              Склад/кабинет:<span className={'main-color'}>*</span>
+            </div>
+            <div className="col-sm-8">
+              <Select
+                options={[selectStorage]}
+                value={selectStorage}
+                name="storage_id"
+                id="selectStorage"
+                isClearable
                 isDisabled={true}
               />
             </div>
           </CRow>
           <CRow className="mb-5">
-            <div className="col-sm-2">Склад/кабинет:</div>
+            <div className="col-sm-2">
+              Причина:<span className={'main-color'}>*</span>
+            </div>
             <div className="col-sm-8">
-              <Select
-                name="storage_id"
-                id="selectStorage"
+              <CreatableSelect
+                name="reason_id"
+                id="selectReason"
                 isClearable
-                value={{
-                  label: equipment.equipment.room.storage,
+                placeholder={'Введите или выберите причину инвентаризации'}
+                onChange={(value, action) => {
+                  setSelectInventoryReason([value, action])
                 }}
-                isDisabled={true}
+                value={selectInventoryReason.value}
+                options={inventoryReasonList}
               />
             </div>
           </CRow>
           <CRow className="mb-3">
             <CCol sm={12} className="d-none d-md-block">
               <CButtonGroup className="float-start">
+                {/*TODO Кнопка создания с событием*/}
                 <Link to={`/equipment`} className="btn btn-outline-dark mx-0 btn-select">
-                  Редактировать
+                  Создать
                 </Link>
-                <Link
-                  to={`/equipment/${equipment.id}`}
-                  className="btn btn-outline-dark mx-4 btn-select"
-                >
+                <Link to={`/list`} className="btn btn-outline-dark mx-4 btn-select">
                   Отменить
                 </Link>
               </CButtonGroup>

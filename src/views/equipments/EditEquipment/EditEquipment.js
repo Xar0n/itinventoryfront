@@ -17,10 +17,45 @@ import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
+function addKeyValue(obj, key, data) {
+  obj[key] = data
+}
+
 const EditEquipment = (props) => {
   const [equipment, setEquipment] = useState([])
   const [loading, setLoading] = useState(true)
+  const [barcode, setBarcode] = useState()
+  const [location, setLocation] = useState()
+  const [selectEmployee, setSelectEmployee] = useState()
+  const [employeeList, setEmployeeList] = useState([])
+  const [errorList, setErrorList] = useState([])
   const history = useHistory()
+
+  const barcodeGenerateClick = (e) => {
+    e.preventDefault()
+    axios.get(`api/barcode/generate`).then((res) => {
+      if (res.data.status === 200) setBarcode(res.data.barcode)
+    })
+  }
+
+  const updateEquipmentSubmit = (e) => {
+    e.preventDefault()
+    const formData = new FormData()
+    let data = {}
+    if (barcode) data['barcode'] = barcode
+    if (selectEmployee.value) data['employee_id'] = selectEmployee.value
+    if (location) data['location'] = location
+    axios.patch(`api/equipments/${equipment.id}`, data).then((res) => {
+      if (res.data.status === 200) {
+        Swal.fire('Редактирование оборудования', res.data.message, 'success')
+        history.push(`/equipment/${equipment.id}`)
+        setErrorList([])
+      } else {
+        setErrorList(res.data.errors)
+      }
+    })
+  }
+
   useEffect(() => {
     let isMounted = true
     // eslint-disable-next-line react/prop-types
@@ -28,11 +63,27 @@ const EditEquipment = (props) => {
     axios.get(`/api/equipments/${equipment_id}`).then((response) => {
       if (isMounted) {
         if (response.data.status === 200) {
+          const equipment_l = response.data.equipment
           setEquipment(response.data.equipment)
-          setLoading(false)
+          axios.get(`api/all-employee/${equipment_l.equipment.organization.id}`).then((res) => {
+            if (res.data.status === 200) {
+              let employee = res.data.employee
+              employee.map(function (o) {
+                return addKeyValue(o, 'label', o.full_name)
+              })
+              setSelectEmployee({
+                label: equipment_l.employee?.full_name,
+                value: equipment_l.employee?.id,
+              })
+              setBarcode(equipment_l.barcode.code)
+              setLocation(equipment_l.location)
+              setEmployeeList(employee)
+              setLoading(false)
+            }
+          })
         } else if (response.data.status === 404) {
           history.push('/equipment')
-          Swal.fire('Просмотр оборудования', response.data.message, 'warning')
+          Swal.fire('Редактирование оборудования', response.data.message, 'warning')
         }
       }
     })
@@ -69,7 +120,7 @@ const EditEquipment = (props) => {
                 name="inventory_number_id"
                 id="selectInventoryNumber"
                 value={{
-                  label: equipment.equipment.inventory_number.number,
+                  label: equipment.equipment.inventory_number?.number,
                 }}
                 isClearable
                 isDisabled={true}
@@ -79,18 +130,30 @@ const EditEquipment = (props) => {
           <CRow className="mb-3">
             <div className="col-sm-2">Штрих-код:</div>
             <div className="col-sm-8">
-              <Select
-                name="barcode_id"
-                id="selectBarcode"
-                isClearable
-                value={{
-                  label: equipment.barcode.code,
+              <CFormInput
+                type={'text'}
+                id={'inputCount'}
+                placeholder="Введите или сформируйте штрих-код "
+                aria-label="Количество"
+                aria-describedby="count"
+                name={'barcode'}
+                value={barcode}
+                onChange={(e) => {
+                  setBarcode(e.target.value)
                 }}
-                placeholder="Введите или выберите штрих-код"
               />
+              {errorList?.barcode?.map(function (error) {
+                return <li key={error}>{error}</li>
+              })}
             </div>
             <div className="col-sm-1">
-              <CButton type={'submit'} color="dark" variant="outline" className="btn-select">
+              <CButton
+                onClick={barcodeGenerateClick}
+                type={'submit'}
+                color="dark"
+                variant="outline"
+                className="btn-select"
+              >
                 Сформировать
               </CButton>
             </div>
@@ -117,7 +180,7 @@ const EditEquipment = (props) => {
                 id="selectName"
                 isClearable
                 value={{
-                  label: equipment.equipment.view.name,
+                  label: equipment.equipment.view?.name,
                 }}
                 isDisabled={true}
               />
@@ -131,7 +194,7 @@ const EditEquipment = (props) => {
                 id="selectGrade"
                 isClearable
                 value={{
-                  label: equipment.equipment.grade.name,
+                  label: equipment.equipment.grade?.name,
                 }}
                 isDisabled={true}
               />
@@ -145,7 +208,7 @@ const EditEquipment = (props) => {
                 id="selectGroup"
                 isClearable
                 value={{
-                  label: equipment.equipment.group.name,
+                  label: equipment.equipment.group?.name,
                 }}
                 isDisabled={true}
               />
@@ -158,11 +221,16 @@ const EditEquipment = (props) => {
                 name="employee_id"
                 id="selectEmployee"
                 isClearable
-                value={{
-                  label: equipment.employee.full_name,
+                value={selectEmployee}
+                options={employeeList}
+                onChange={(e) => {
+                  setSelectEmployee(e)
                 }}
                 placeholder="Выберите сотрудника"
               />
+              {errorList?.employee?.map(function (error) {
+                return <li key={error}>{error}</li>
+              })}
             </div>
           </CRow>
           <h5 className="mb-3">Местоположение</h5>
@@ -194,7 +262,7 @@ const EditEquipment = (props) => {
               />
             </div>
           </CRow>
-          <CRow className="mb-5">
+          <CRow className="mb-3">
             <div className="col-sm-2">Склад/кабинет:</div>
             <div className="col-sm-8">
               <Select
@@ -208,12 +276,35 @@ const EditEquipment = (props) => {
               />
             </div>
           </CRow>
+          <CRow className="mb-5">
+            <div className="col-sm-2">Доп.инф.:</div>
+            <div className="col-sm-8">
+              <CFormInput
+                type={'text'}
+                id={'inputLocation'}
+                placeholder="Введите дополнительную информацию о местоположении"
+                aria-label="Дополнительная информация о местоположении"
+                aria-describedby="location"
+                name={'location'}
+                value={location}
+                onChange={(e) => {
+                  setLocation(e.target.value)
+                }}
+              />
+            </div>
+          </CRow>
           <CRow className="mb-3">
             <CCol sm={12} className="d-none d-md-block">
               <CButtonGroup className="float-start">
-                <Link to={`/equipment`} className="btn btn-outline-dark mx-0 btn-select">
+                <CButton
+                  onClick={updateEquipmentSubmit}
+                  type={'submit'}
+                  color="dark"
+                  variant="outline"
+                  className="btn-select"
+                >
                   Редактировать
-                </Link>
+                </CButton>
                 <Link
                   to={`/equipment/${equipment.id}`}
                   className="btn btn-outline-dark mx-4 btn-select"

@@ -102,9 +102,9 @@ const CreateObject = () => {
     formData.append('count', objectInput.count)
     axios.post('api/objects', formData).then((res) => {
       if (res === 200) {
+        history.push('/object')
         Swal.fire('Создание объекта', res.data.message, 'success')
         setErrorList([])
-        history.push('/object')
       } else {
         Swal.fire('Создание объекта', res.data.message, 'warning')
         setErrorList(res.data.errors)
@@ -175,7 +175,7 @@ const CreateObject = () => {
           <CRow className={'mb-5'}>
             <CCol sm={5}>
               <h4 id="equipment-header" className="card-title mb-0">
-                Создать оборудование
+                Создать объект
               </h4>
             </CCol>
           </CRow>
