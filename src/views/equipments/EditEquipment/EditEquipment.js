@@ -75,8 +75,8 @@ const EditEquipment = (props) => {
                 label: equipment_l.employee?.full_name,
                 value: equipment_l.employee?.id,
               })
-              setBarcode(equipment_l.barcode.code)
-              setLocation(equipment_l.location)
+              setBarcode(equipment_l?.barcode?.code)
+              setLocation(equipment_l?.location)
               setEmployeeList(employee)
               setLoading(false)
             }

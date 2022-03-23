@@ -28,7 +28,6 @@ const options = [
 
 const Login = () => {
   const history = useHistory()
-  const [selectedOption, setSelectedOption] = useState(null)
   const [loginInput, setLogin] = useState({
     login: '',
     password: '',

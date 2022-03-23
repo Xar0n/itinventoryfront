@@ -1,4 +1,11 @@
-import { useGlobalFilter, useFilters, useSortBy, useTable, useAsyncDebounce } from 'react-table'
+import {
+  useGlobalFilter,
+  useFilters,
+  useSortBy,
+  useTable,
+  useAsyncDebounce,
+  usePagination,
+} from 'react-table'
 import {
   CButton,
   CButtonGroup,
@@ -9,6 +16,10 @@ import {
   CDropdownMenu,
   CDropdownToggle,
   CFormInput,
+  CFormLabel,
+  CFormSelect,
+  CPagination,
+  CPaginationItem,
   CRow,
   CTable,
   CTableBody,
@@ -125,25 +136,35 @@ function TableEquipment({ columns, data }) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow,
     state,
     visibleColumns,
     setGlobalFilter,
     preGlobalFilteredRows,
     allColumns,
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+    gotoPage,
+    setPageSize,
+    pageCount,
   } = useTable(
     {
       columns,
       data,
       defaultColumn,
+      initialState: { pageIndex: 0 },
     },
     useGlobalFilter,
     useFilters,
     useSortBy,
+    usePagination,
   )
 
-  const { globalFilter } = state
+  const { globalFilter, pageIndex, pageSize } = state
   let objectEmployee = objectByHeader(allColumns, 'Сотрудник')
   let objectOrganization = objectByHeader(allColumns, 'Организация')
   dispath(setSearchFilter('4566'))
@@ -224,7 +245,7 @@ function TableEquipment({ columns, data }) {
           ))}
         </CTableHead>
         <CTableBody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {page.map((row, i) => {
             prepareRow(row)
             return (
               // eslint-disable-next-line react/jsx-key
@@ -247,6 +268,54 @@ function TableEquipment({ columns, data }) {
           })}
         </CTableBody>
       </CTable>
+      <CRow className="mb-auto">
+        <CFormLabel htmlFor={'selectStorage'} className="col-sm-auto col-form-label">
+          <span>
+            Страница{' '}
+            <strong>
+              {pageIndex + 1} из {pageOptions.length}
+            </strong>{' '}
+            | Перейти на страницу:
+          </span>
+        </CFormLabel>
+        <div className="col-sm-1">
+          <CFormInput
+            type="number"
+            id="inputSearch"
+            placeholder={`Поиск среди  строк`}
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(pageNumber)
+            }}
+          />
+        </div>
+        <div className="col-sm-auto">
+          <CFormSelect value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+            {[25, 50, 75, 100].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                Показать {pageSize}
+              </option>
+            ))}
+          </CFormSelect>
+        </div>
+        <div className="col-sm-auto float-end">
+          <CPagination align="end" aria-label="Навигация">
+            <CPaginationItem onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+              {'<<'}
+            </CPaginationItem>
+            <CPaginationItem onClick={() => previousPage()} disabled={!canPreviousPage}>
+              Прошлая
+            </CPaginationItem>
+            <CPaginationItem onClick={() => nextPage()} disabled={!canNextPage}>
+              Следующая
+            </CPaginationItem>
+            <CPaginationItem onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+              {'>>'}
+            </CPaginationItem>
+          </CPagination>
+        </div>
+      </CRow>
     </>
   )
 }
