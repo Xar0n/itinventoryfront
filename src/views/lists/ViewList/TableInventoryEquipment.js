@@ -1,5 +1,13 @@
-import { useGlobalFilter, useFilters, useSortBy, useTable, usePagination } from 'react-table'
 import {
+  useGlobalFilter,
+  useFilters,
+  useSortBy,
+  useTable,
+  useAsyncDebounce,
+  usePagination,
+} from 'react-table'
+import {
+  CButton,
   CButtonGroup,
   CCol,
   CDropdown,
@@ -22,11 +30,26 @@ import {
 } from '@coreui/react'
 import { Link, useHistory } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
-import { cilPlus } from '@coreui/icons'
-import React from 'react'
+import { cibAddthis, cilPlus } from '@coreui/icons'
+import React, { useEffect, useState } from 'react'
+import Select from 'react-select'
+import _, { isNull } from 'underscore'
+import axios from 'axios'
 import { useDispatch } from 'react-redux'
-import { GlobalFilter, SelectColumnFilter } from './FiltersEquipment'
-import { setSearchFilter } from '../../../store'
+import store, { setSearchFilter } from '../../../store'
+
+function arrUnique(arr) {
+  var cleaned = []
+  arr.forEach(function (itm) {
+    var unique = true
+    cleaned.forEach(function (itm2) {
+      if (_.isEqual(itm, itm2)) unique = false
+    })
+    if (unique) cleaned.push(itm)
+  })
+  return cleaned
+}
+
 function objectByHeader(array, header) {
   let index = array.findIndex(function (item, i) {
     return item.Header === header
@@ -35,15 +58,32 @@ function objectByHeader(array, header) {
 }
 
 // eslint-disable-next-line react/prop-types
-function TableEquipment({ columns, data }) {
-  const history = useHistory()
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const defaultColumn = React.useMemo(
-    () => ({
-      Filter: SelectColumnFilter,
-    }),
-    [],
+function GlobalFilter({ preGlobalFilteredRows, filter, setFilter }) {
+  // eslint-disable-next-line react/prop-types
+  const count = preGlobalFilteredRows.length
+  const [value, setValue] = React.useState(filter)
+  const onChange = useAsyncDebounce((value) => {
+    setFilter(value || undefined)
+  }, 200)
+  return (
+    <div className="col-sm-3 float-end">
+      <CFormInput
+        type="text"
+        id="inputSearch"
+        placeholder={`Поиск среди ${count} строк`}
+        value={value || ''}
+        onChange={(e) => {
+          setValue(e.target.value)
+          onChange(e.target.value)
+        }}
+      />
+    </div>
   )
+}
+
+// eslint-disable-next-line react/prop-types
+function TableInventoryEquipment({ columns, data }) {
+  const history = useHistory()
   const dispath = useDispatch()
   const {
     getTableProps,
@@ -68,7 +108,6 @@ function TableEquipment({ columns, data }) {
     {
       columns,
       data,
-      defaultColumn,
       initialState: { pageIndex: 0 },
     },
     useGlobalFilter,
@@ -78,65 +117,16 @@ function TableEquipment({ columns, data }) {
   )
 
   const { globalFilter, pageIndex, pageSize } = state
-  let objectEmployee = objectByHeader(allColumns, 'Сотрудник')
-  let objectOrganization = objectByHeader(allColumns, 'Организация')
-  dispath(setSearchFilter(globalFilter))
+  dispath(setSearchFilter('4566'))
   return (
     <>
       <CRow className={'mb-3'}>
-        <CCol sm={8}>
+        <CCol sm={12}>
           <GlobalFilter
             preGlobalFilteredRows={preGlobalFilteredRows}
             filter={globalFilter}
             setFilter={setGlobalFilter}
           />
-        </CCol>
-        <CCol sm={4} className="d-none d-md-block">
-          <CButtonGroup className="float-end">
-            <CDropdown className="float-end mx-1">
-              <CDropdownToggle variant={'outline'} color="dark">
-                Использование
-              </CDropdownToggle>
-              <CDropdownMenu>
-                <CDropdownItem>
-                  <div key={1}>
-                    {objectOrganization.canFilter ? objectOrganization.render('Filter') : null}
-                  </div>
-                </CDropdownItem>
-                <CDropdownItemPlain>
-                  <div key={2}>
-                    {objectEmployee.canFilter ? objectEmployee.render('Filter') : null}
-                  </div>
-                </CDropdownItemPlain>
-              </CDropdownMenu>
-            </CDropdown>
-            <CDropdown className="float-end mx-1">
-              <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
-                Поля
-              </CDropdownToggle>
-              <CDropdownMenu>
-                {allColumns.map((column) => (
-                  // eslint-disable-next-line react/jsx-key
-                  <CDropdownItem key={column.id}>
-                    <div>
-                      <label>
-                        <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
-                        {column.render('Header')}
-                      </label>
-                    </div>
-                  </CDropdownItem>
-                ))}
-              </CDropdownMenu>
-            </CDropdown>
-            <div className="float-end mx-1">
-              <Link
-                className="btn btn-outline-dark px-4 float-end btn-select"
-                to={'equipment/store'}
-              >
-                <CIcon icon={cilPlus} />
-              </Link>
-            </div>
-          </CButtonGroup>
         </CCol>
       </CRow>
       <CTable bordered {...getTableProps()} className={'selectTable'}>
@@ -151,7 +141,6 @@ function TableEquipment({ columns, data }) {
                     {column.render('Header')}
                     <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
                   </div>
-                  <div>{column.canFilter ? column.render('Filter') : null}</div>
                 </CTableHeaderCell>
               ))}
             </CTableRow>
@@ -233,4 +222,4 @@ function TableEquipment({ columns, data }) {
   )
 }
 
-export default TableEquipment
+export default TableInventoryEquipment

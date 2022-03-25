@@ -1,19 +1,19 @@
 import { createStore } from 'redux'
-import { combineReducers } from 'redux'
-import reducerSidebarShow from './reducers/reducerSidebarShow'
 import { useState } from 'react'
 
 const SET = 'set'
 const SET_SEARCH = 'set_search'
+const SET_EMPLOYEE = 'set_search'
+const SET_ORGANIZATION = 'set_search'
+const SET_ADDRESS = 'set_search'
 
 const initialState = {
-  sidebarShow: true,
+  sidebarShow: false,
   sidebarUnfoldable: true,
-}
-
-const initialEquipmentFilters = {
   search: '',
-  employee_id: '',
+  employee: '',
+  organization: '',
+  address: '',
 }
 
 export function setSearchFilter(data) {
@@ -21,6 +21,30 @@ export function setSearchFilter(data) {
     type: SET_SEARCH,
     payload: data,
     info: 'Задать значение фильтра поиска',
+  }
+}
+
+export function setEmployeeFilter(data) {
+  return {
+    type: SET_EMPLOYEE,
+    payload: data,
+    info: 'Задать значение фильтра сотрудника',
+  }
+}
+
+export function setOrganizationFilter(data) {
+  return {
+    type: SET_ORGANIZATION,
+    payload: data,
+    info: 'Задать значение фильтра организации',
+  }
+}
+
+export function setAddressFilter(data) {
+  return {
+    type: SET_ADDRESS,
+    payload: data,
+    info: 'Задать значение фильтра адреса',
   }
 }
 
@@ -35,13 +59,6 @@ const changeStateReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET:
       return { ...state, ...action.payload }
-    default:
-      return state
-  }
-}
-
-const equipmentFiltersReducer = (state = initialEquipmentFilters, action) => {
-  switch (action.type) {
     case SET_SEARCH:
       return { ...state, search: action.payload }
     default:
@@ -49,13 +66,8 @@ const equipmentFiltersReducer = (state = initialEquipmentFilters, action) => {
   }
 }
 
-const rootReducer = combineReducers({
-  state: changeStateReducer,
-  equipment_filters: equipmentFiltersReducer,
-})
-
 const store = createStore(
-  rootReducer,
+  changeStateReducer,
   /* preloadedState, */ +window.__REDUX_DEVTOOLS_EXTENSION__ &&
     window.__REDUX_DEVTOOLS_EXTENSION__(),
 )

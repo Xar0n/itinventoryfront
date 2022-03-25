@@ -4,23 +4,49 @@ import {
   CButtonGroup,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
-  CFormInput,
+  CFormCheck,
   CFormLabel,
-  CInputGroup,
-  CInputGroupText,
   CRow,
 } from '@coreui/react'
-import Select from 'react-select'
 import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import CreatableSelect from 'react-select/creatable'
 
 const ViewEquipment = (props) => {
+  const [writeOffInput, setWriteOffInput] = useState({
+    used: false,
+  })
+  const [writeOffSelect, setWriteOffSelect] = useState({
+    reasonWriteOff: {},
+  })
+  const [writeOffList, setWriteOffList] = useState([])
+  const [showWriteoff, setShowWriteoff] = useState(false)
   const [equipment, setEquipment] = useState([])
   const [loading, setLoading] = useState(true)
+  const [errorList, setErrorList] = useState([])
   const history = useHistory()
+  const updateEquipmentSubmit = (e) => {
+    e.preventDefault()
+    let data = {}
+    const used = writeOffInput['used']
+    const reasonWriteOff = writeOffSelect['reasonWriteOff']
+    if (used) data['used'] = used
+    if (reasonWriteOff.action === 'create-option')
+      data['reason_writeoff_id_create'] = reasonWriteOff.value
+    else if (reasonWriteOff.action === 'select-option')
+      data['reason_writeoff_id'] = reasonWriteOff.value
+    axios.patch(`api/equipments/write-off/${equipment.id}`, data).then((res) => {
+      if (res.data.status === 200) {
+        //TODO перерисовка страницы чтобы показать, что оборудование списано
+        Swal.fire('Списание оборудования', res.data.message, 'success')
+        setErrorList([])
+      } else {
+        setErrorList(res.data.errors)
+      }
+    })
+  }
   useEffect(() => {
     let isMounted = true
     // eslint-disable-next-line react/prop-types
@@ -29,10 +55,17 @@ const ViewEquipment = (props) => {
       if (isMounted) {
         if (response.data.status === 200) {
           setEquipment(response.data.equipment)
-          setLoading(false)
         } else if (response.data.status === 404) {
           history.push('/equipment')
           Swal.fire('Просмотр оборудования', response.data.message, 'warning')
+        }
+      }
+    })
+    axios.get(`/api/all-reason-write-off`).then((response) => {
+      if (isMounted) {
+        if (response.data.status === 200) {
+          setWriteOffList(response.data.reasons_write_off)
+          setLoading(false)
         }
       }
     })
@@ -41,7 +74,18 @@ const ViewEquipment = (props) => {
     }
     // eslint-disable-next-line react/prop-types
   }, [props.match.params.id, history])
-
+  const changeShowWriteOff = (e) => {
+    setShowWriteoff(!showWriteoff)
+  }
+  const handleInput = (e) => {
+    e.persist()
+    setWriteOffInput({ ...writeOffInput, [e.target.name]: e.target.value })
+  }
+  const handleSelect = (e, action) => {
+    console.log(e)
+    console.log(action)
+    setWriteOffSelect({ ...writeOffSelect, [action.name]: { ...e, ...action } })
+  }
   if (loading) {
     return (
       <div className="pt-3 text-center">
@@ -107,16 +151,72 @@ const ViewEquipment = (props) => {
             <div className="col-sm-2">Адрес:</div>
             <div className="col-sm-10">{equipment.equipment.room.address.name}</div>
           </CRow>
-          <CRow className="mb-5">
+          <CRow className="mb-3">
             <div className="col-sm-2">Склад/кабинет:</div>
             <div className="col-sm-10">{equipment.equipment.room.storage}</div>
           </CRow>
+          <CRow className="mb-4">
+            <div className="col-sm-2">Доп.инф.:</div>
+            <div className="col-sm-10">{equipment.location}</div>
+          </CRow>
           <CRow className="mb-5">
-            <CCol sm={12} className="d-none d-md-block">
-              <CButton color="dark" variant="outline" className="float-start btn-select">
-                Списать
-              </CButton>
-            </CCol>
+            {showWriteoff && (
+              <div>
+                <h5 className="mb-3">Списание</h5>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">
+                    Подтвердите списание:
+                    <span className={'main-color'}>*</span>
+                  </div>
+                  <div className="col-sm-8">
+                    <CFormCheck onChange={handleInput} id="flexCheckDefault" name="used" />
+                  </div>
+                </CRow>
+                <CRow className="mb-3">
+                  <CFormLabel htmlFor={'selectObject'} className="col-sm-2 col-form-label">
+                    Причина списания:
+                    <span className={'main-color'}>*</span>
+                  </CFormLabel>
+                  <div className="col-sm-8">
+                    <CreatableSelect
+                      placeholder={'Введите или выберите причину списания'}
+                      name="reasonWriteOff"
+                      id="selectObject"
+                      value={writeOffSelect['reasonWriteOff']}
+                      onChange={handleSelect}
+                      options={writeOffList}
+                    />
+                  </div>
+                </CRow>
+                <CCol sm={12} className="d-none d-md-block">
+                  <CButtonGroup className="float-start">
+                    <CButton color="dark" variant="outline" className="float-start btn-select">
+                      Списать
+                    </CButton>
+                    <CButton
+                      onClick={changeShowWriteOff}
+                      color="dark"
+                      variant="outline"
+                      className="float-start btn-select mx-4"
+                    >
+                      Отменить
+                    </CButton>
+                  </CButtonGroup>
+                </CCol>
+              </div>
+            )}
+            {!showWriteoff && (
+              <CCol sm={12} className="d-none d-md-block">
+                <CButton
+                  onClick={changeShowWriteOff}
+                  color="dark"
+                  variant="outline"
+                  className="float-start btn-select"
+                >
+                  Списать
+                </CButton>
+              </CCol>
+            )}
           </CRow>
           <CRow className="mb-3">
             <CCol sm={12} className="d-none d-md-block">

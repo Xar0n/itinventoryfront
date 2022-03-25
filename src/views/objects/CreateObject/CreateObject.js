@@ -182,7 +182,7 @@ const CreateObject = () => {
           <CForm onSubmit={storeObjectSubmit}>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectInventoryNumber'} className="col-sm-2 col-form-label">
-                Инвентарный номер
+                Инвентарный номер:
               </CFormLabel>
               <div className="col-sm-10">
                 <CreatableSelect
@@ -197,7 +197,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectInventoryNumber'} className="col-sm-2 col-form-label">
-                Наименование
+                Наименование:
                 <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
@@ -213,7 +213,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectView'} className="col-sm-2 col-form-label">
-                Вид
+                Вид:
               </CFormLabel>
               <div className="col-sm-10">
                 <CreatableSelect
@@ -228,7 +228,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectGrade'} className="col-sm-2 col-form-label">
-                Сорт
+                Сорт:
               </CFormLabel>
               <div className="col-sm-10">
                 <CreatableSelect
@@ -243,7 +243,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectGroup'} className="col-sm-2 col-form-label">
-                Группа
+                Группа:
               </CFormLabel>
               <div className="col-sm-10">
                 <CreatableSelect
@@ -258,7 +258,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectOrganization'} className="col-sm-2 col-form-label">
-                Организация
+                Организация:
                 <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
@@ -277,7 +277,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectAddress'} className="col-sm-2 col-form-label">
-                Адрес
+                Адрес:
                 <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
@@ -293,7 +293,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
-                Склад / кабинет
+                Склад / кабинет:
                 <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
@@ -312,7 +312,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-5">
               <CFormLabel htmlFor={'inputCount'} className="col-sm-2 col-form-label">
-                Количество
+                Количество:
                 <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">

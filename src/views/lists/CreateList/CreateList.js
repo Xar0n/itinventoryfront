@@ -42,8 +42,7 @@ const CreateList = (props) => {
   const [selectInventoryReason, setSelectInventoryReason] = useState([])
   const [selectMol, setSelectMol] = useState([])
   const [selectCommission, setSelectCommission] = useState([])
-  const [selectBase, setSelectBase] = useState()
-  const [baseNumber, setBaseNumber] = useState()
+  const [selectBase, setSelectBase] = useState([])
   const [inventoryReasonList, setInventoryReasonList] = useState([])
   const [commissionList, setCommissionList] = useState([])
   const [molList, setMolList] = useState([])
@@ -52,9 +51,9 @@ const CreateList = (props) => {
     base_number: '',
   })
   //const [id, setId] = useState()
-  const address_id = 1
+  const address_id = 3
   const organization_id = 1
-  const storage_id = 1
+  const storage_id = 43
   const baseList = [
     { value: 1, label: 'Приказ' },
     { value: 2, label: 'Постановление' },
@@ -62,23 +61,22 @@ const CreateList = (props) => {
   ]
 
   const storeListSubmit = (e) => {
-    console.log(selectInventoryReason)
     e.preventDefault()
     const formData = new FormData()
     const organization_id = selectOrganization.value
     const address_id = selectAddress.value
     const storage_id = selectStorage.value
-    const inventory_reason = selectInventoryReason.value
-    const base_id = selectBase
-    const base_number = baseNumber
+    const inventory_reason = selectInventoryReason.value.value
+    const base_id = selectBase.value
+    const base_number = list['base_number']
     const base_datetime = baseDate
     const start_datetime = startDate
     const end_datetime = endDate
     const commission_ids = selectCommission
     const mol_ids = selectMol
-    if (selectInventoryReason.action === 'create-option')
+    if (selectInventoryReason.action.action === 'create-option')
       formData.append('inventory_reason_id_create', inventory_reason)
-    else if (selectInventoryReason.action === 'select-option')
+    else if (selectInventoryReason.action.action === 'select-option')
       formData.append('inventory_reason_id', inventory_reason)
     formData.append('organization_id', organization_id)
     formData.append('address_id', address_id)
@@ -104,10 +102,9 @@ const CreateList = (props) => {
       formData.append('mol[]', o.value)
     })
     axios.post('api/lists', formData).then((res) => {
-      if (res === 200) {
-        //history.push('/lists')
-        console.log(res.data)
+      if (res.data.status === 200) {
         Swal.fire('Создание ведомости', res.data.message, 'success')
+        history.push(`/lists/${res.data.list_id}`)
         setErrorList([])
       } else {
         Swal.fire('Создание ведомости', res.data.message, 'warning')
@@ -307,7 +304,7 @@ const CreateList = (props) => {
               </div>
               <div className="col-sm-auto">
                 <CFormInput
-                  type={'text'}
+                  type={'number'}
                   id={'inputBaseNumber'}
                   placeholder="Введите номер основания"
                   aria-label="Номер основания"

@@ -11,6 +11,7 @@ const CreateObject = React.lazy(() => import('./views/objects/CreateObject/Creat
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
 const CreateList = React.lazy(() => import('./views/lists/CreateList/CreateList'))
+const ViewList = React.lazy(() => import('./views/lists/ViewList/ViewList'))
 
 const routes = [
   { path: '/', exact: true, name: 'Главная' },
@@ -18,13 +19,13 @@ const routes = [
   { path: '/object', name: 'Объекты', component: Object, exact: true },
   { path: '/object/create', name: 'Создание', component: CreateObject },
   { path: '/equipment', name: 'Оборудование', component: Equipment, exact: true },
-  { path: '/equipment/create', name: 'Создание', component: CreateEquipment },
+  { path: '/equipment/create', name: 'Создание', component: CreateEquipment, exact: true },
   { path: '/equipment/edit/:id', name: 'Редактирование', component: EditEquipment },
   { path: '/equipment/:id', exact: true, name: 'Просмотр', component: ViewEquipment },
 
   { path: '/list', name: 'Ведомости', component: Equipment, exact: true },
   { path: '/list/create', name: 'Создание', component: CreateList, exact: true },
-  { path: '/list/:id', exact: true, name: 'Просмотр', component: ViewEquipment },
+  { path: '/list/:id', exact: true, name: 'Просмотр', component: ViewList },
 ]
 
 export default routes

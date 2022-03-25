@@ -23,8 +23,24 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
+import axios from 'axios'
+import Swal from 'sweetalert2'
+import { useHistory } from 'react-router-dom'
 
 const AppHeaderDropdown = () => {
+  const history = useHistory()
+  const logoutSubmit = (e) => {
+    e.preventDefault()
+    axios.post('/api/logout').then((res) => {
+      if (res.data.status === 200) {
+        localStorage.removeItem('auth_token')
+        localStorage.removeItem('auth_name')
+        history.push('/login')
+        window.location.reload()
+      } else {
+      }
+    })
+  }
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
@@ -40,7 +56,7 @@ const AppHeaderDropdown = () => {
           Настройки
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" onClick={logoutSubmit}>
           <CIcon icon={cilLockLocked} className="me-2" />
           Выход
         </CDropdownItem>

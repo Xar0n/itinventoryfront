@@ -27,8 +27,10 @@ const EditEquipment = (props) => {
   const [barcode, setBarcode] = useState()
   const [location, setLocation] = useState()
   const [selectEmployee, setSelectEmployee] = useState()
+  const [selectObject, setSelectObject] = useState()
   const [employeeList, setEmployeeList] = useState([])
   const [errorList, setErrorList] = useState([])
+  const [objectList, setObjectList] = useState([])
   const history = useHistory()
 
   const barcodeGenerateClick = (e) => {
@@ -40,11 +42,11 @@ const EditEquipment = (props) => {
 
   const updateEquipmentSubmit = (e) => {
     e.preventDefault()
-    const formData = new FormData()
     let data = {}
     if (barcode) data['barcode'] = barcode
     if (selectEmployee.value) data['employee_id'] = selectEmployee.value
     if (location) data['location'] = location
+    data['object_id'] = selectObject.value
     axios.patch(`api/equipments/${equipment.id}`, data).then((res) => {
       if (res.data.status === 200) {
         Swal.fire('Редактирование оборудования', res.data.message, 'success')
@@ -77,8 +79,13 @@ const EditEquipment = (props) => {
               })
               setBarcode(equipment_l?.barcode?.code)
               setLocation(equipment_l?.location)
+              setObjectList(equipment_l.objects)
               setEmployeeList(employee)
               setLoading(false)
+              setSelectObject({
+                label: '№:' + equipment_l.equipment.id + ', ' + equipment_l.equipment.room.storage,
+                value: equipment_l.equipment.id,
+              })
             }
           })
         } else if (response.data.status === 404) {
@@ -114,7 +121,23 @@ const EditEquipment = (props) => {
           </CRow>
           <h5 className="mb-3">Основная информация</h5>
           <CRow className="mb-3">
-            <div className="col-sm-2">Инвентарный номер:</div>
+            <CFormLabel htmlFor={'selectObject'} className="col-sm-2 col-form-label">
+              Объект:
+            </CFormLabel>
+            <div className="col-sm-8">
+              <Select
+                name="equipment_id"
+                id="selectObject"
+                value={selectObject}
+                onChange={(e) => setSelectObject(e)}
+                options={objectList}
+              />
+            </div>
+          </CRow>
+          <CRow className="mb-3">
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Инвентарный номер:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="inventory_number_id"
@@ -128,7 +151,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Штрих-код:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Штрих-код:
+            </CFormLabel>
             <div className="col-sm-8">
               <CFormInput
                 type={'text'}
@@ -159,7 +184,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Наименование:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Наименование:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="name_id"
@@ -173,7 +200,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Вид:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Вид:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="name_id"
@@ -187,7 +216,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Сорт:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Сорт:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="grade_id"
@@ -201,7 +232,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Группа:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Группа:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="group_id"
@@ -215,7 +248,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Сотрудник:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Сотрудник:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="employee_id"
@@ -235,7 +270,9 @@ const EditEquipment = (props) => {
           </CRow>
           <h5 className="mb-3">Местоположение</h5>
           <CRow className="mb-3">
-            <div className="col-sm-2">Организация:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Организация:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="organization_id"
@@ -249,7 +286,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Адрес:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Адрес:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="address_id"
@@ -263,7 +302,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-3">
-            <div className="col-sm-2">Склад/кабинет:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Склад/кабинет:
+            </CFormLabel>
             <div className="col-sm-8">
               <Select
                 name="storage_id"
@@ -277,7 +318,9 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-5">
-            <div className="col-sm-2">Доп.инф.:</div>
+            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+              Доп.инф.:
+            </CFormLabel>
             <div className="col-sm-8">
               <CFormInput
                 type={'text'}

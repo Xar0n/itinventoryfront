@@ -19,60 +19,23 @@ import { AppHeaderDropdown } from './header/index'
 import { logo } from 'src/assets/brand/logo'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { changeState } from '../store'
 
 const AppHeader = () => {
-  const history = useHistory()
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
-  const logoutSubmit = (e) => {
-    e.preventDefault()
-    axios.post('/api/logout').then((res) => {
-      if (res.data.status === 200) {
-        localStorage.removeItem('auth_token')
-        localStorage.removeItem('auth_name')
-        Swal.fire('Авторизация', res.data.message, 'success')
-        history.push('/login')
-        window.location.reload()
-      } else {
-      }
-    })
-  }
   return (
     <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
         <CHeaderToggler
           className="ps-1"
-          onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
+          onClick={() => dispatch(changeState({ sidebarShow: !sidebarShow }))}
         >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">
           <CIcon icon={logo} height={48} alt="Logo" />
         </CHeaderBrand>
-        <CHeaderNav className="d-none d-md-flex me-auto">
-          <CNavItem>
-            <CNavLink href="#" onClick={logoutSubmit}>
-              Выход
-            </CNavLink>
-          </CNavItem>
-        </CHeaderNav>
-        <CHeaderNav>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilEnvelopeOpen} size="lg" />
-            </CNavLink>
-          </CNavItem>
-        </CHeaderNav>
         <CHeaderNav className="ms-3">
           <AppHeaderDropdown />
         </CHeaderNav>
