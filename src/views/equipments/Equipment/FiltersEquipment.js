@@ -42,7 +42,6 @@ export function GlobalFilter({ preGlobalFilteredRows, filter, setFilter }) {
 
 // eslint-disable-next-line react/prop-types
 export function SelectColumnFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
-  const [option, setOption] = useState('')
   const options = React.useMemo(() => {
     const options = new Set()
     // eslint-disable-next-line react/prop-types
@@ -52,15 +51,13 @@ export function SelectColumnFilter({ column: { filterValue, setFilter, preFilter
     return [...options.values()]
   }, [id, preFilteredRows])
   let filteredValues
-  // if (strJson !== '[]') {
   filteredValues = arrUnique(options)
-  //   setOption(filteredValues)
-  // }
+  const value = filteredValues.find((e) => e.value === filterValue || undefined)
   return (
     <Select
       isClearable
       placeholder=""
-      defaultValue={filterValue}
+      value={value}
       onChange={(e) => {
         if (e) {
           setFilter(e.value || undefined)

@@ -3,9 +3,10 @@ import { useState } from 'react'
 
 const SET = 'set'
 const SET_SEARCH = 'set_search'
-const SET_EMPLOYEE = 'set_search'
-const SET_ORGANIZATION = 'set_search'
-const SET_ADDRESS = 'set_search'
+const SET_EMPLOYEE = 'set_employee'
+const SET_ORGANIZATION = 'set_organization'
+const SET_ADDRESS = 'set_address'
+const SET_STORAGE = 'set_storage'
 
 const initialState = {
   sidebarShow: false,
@@ -14,6 +15,7 @@ const initialState = {
   employee: '',
   organization: '',
   address: '',
+  storage: '',
 }
 
 export function setSearchFilter(data) {
@@ -48,6 +50,14 @@ export function setAddressFilter(data) {
   }
 }
 
+export function setStorageFilter(data) {
+  return {
+    type: SET_STORAGE,
+    payload: data,
+    info: 'Задать значение фильтра склада/кабинеиа',
+  }
+}
+
 export function changeState(data) {
   return {
     type: SET,
@@ -61,6 +71,14 @@ const changeStateReducer = (state = initialState, action) => {
       return { ...state, ...action.payload }
     case SET_SEARCH:
       return { ...state, search: action.payload }
+    case SET_ORGANIZATION:
+      return { ...state, organization: action.payload }
+    case SET_EMPLOYEE:
+      return { ...state, employee: action.payload }
+    case SET_ADDRESS:
+      return { ...state, address: action.payload }
+    case SET_STORAGE:
+      return { ...state, storage: action.payload }
     default:
       return state
   }

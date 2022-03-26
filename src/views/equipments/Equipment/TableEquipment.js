@@ -26,7 +26,7 @@ import { cilPlus } from '@coreui/icons'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { GlobalFilter, SelectColumnFilter } from './FiltersEquipment'
-import { setSearchFilter } from '../../../store'
+import store, { setOrganizationFilter, setSearchFilter } from '../../../store'
 function objectByHeader(array, header) {
   let index = array.findIndex(function (item, i) {
     return item.Header === header
@@ -69,7 +69,7 @@ function TableEquipment({ columns, data }) {
       columns,
       data,
       defaultColumn,
-      initialState: { pageIndex: 0 },
+      initialState: { pageIndex: 0, hiddenColumns: ['equipment.view.name'] },
     },
     useGlobalFilter,
     useFilters,
@@ -77,10 +77,20 @@ function TableEquipment({ columns, data }) {
     usePagination,
   )
 
-  const { globalFilter, pageIndex, pageSize } = state
+  const { globalFilter, pageIndex, pageSize, filters } = state
   let objectEmployee = objectByHeader(allColumns, 'Сотрудник')
   let objectOrganization = objectByHeader(allColumns, 'Организация')
-  dispath(setSearchFilter(globalFilter))
+  let objectAddress = objectByHeader(allColumns, 'Адрес')
+  let objectStorage = objectByHeader(allColumns, 'Хранилище')
+  console.log(filters.find((e) => e.id === 'employee.full_name'))
+  if (globalFilter) {
+    dispath(setSearchFilter(globalFilter))
+  }
+  let org = filters.find((e) => e.id === 'equipment.organization.name')
+  if (org) {
+    dispath(setOrganizationFilter(org.value))
+  }
+  console.log(store.getState())
   return (
     <>
       <CRow className={'mb-3'}>
@@ -94,19 +104,40 @@ function TableEquipment({ columns, data }) {
         <CCol sm={4} className="d-none d-md-block">
           <CButtonGroup className="float-end">
             <CDropdown className="float-end mx-1">
-              <CDropdownToggle variant={'outline'} color="dark">
+              <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
+                Местоположение
+              </CDropdownToggle>
+              <CDropdownMenu className={'ul'}>
+                <CDropdownItemPlain>
+                  <div>Выберите адрес:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectAddress.canFilter ? objectAddress.render('Filter') : null}
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  <div>Выберите склад/кабинет:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectStorage.canFilter ? objectStorage.render('Filter') : null}
+                </CDropdownItemPlain>
+              </CDropdownMenu>
+            </CDropdown>
+            <CDropdown className="float-end mx-1">
+              <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Использование
               </CDropdownToggle>
-              <CDropdownMenu>
-                <CDropdownItem>
-                  <div key={1}>
-                    {objectOrganization.canFilter ? objectOrganization.render('Filter') : null}
-                  </div>
-                </CDropdownItem>
+              <CDropdownMenu className={'ul'}>
                 <CDropdownItemPlain>
-                  <div key={2}>
-                    {objectEmployee.canFilter ? objectEmployee.render('Filter') : null}
-                  </div>
+                  <div>Выберите организацию:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectOrganization.canFilter ? objectOrganization.render('Filter') : null}
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  <div>Выберите сотрудника:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectEmployee.canFilter ? objectEmployee.render('Filter') : null}
                 </CDropdownItemPlain>
               </CDropdownMenu>
             </CDropdown>
@@ -151,7 +182,7 @@ function TableEquipment({ columns, data }) {
                     {column.render('Header')}
                     <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
                   </div>
-                  <div>{column.canFilter ? column.render('Filter') : null}</div>
+                  {/*<div>{column.canFilter ? column.render('Filter') : null}</div>*/}
                 </CTableHeaderCell>
               ))}
             </CTableRow>

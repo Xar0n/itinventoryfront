@@ -5,6 +5,7 @@ import {
   CCard,
   CCardBody,
   CCol,
+  CForm,
   CFormCheck,
   CFormLabel,
   CRow,
@@ -27,7 +28,7 @@ const ViewEquipment = (props) => {
   const [loading, setLoading] = useState(true)
   const [errorList, setErrorList] = useState([])
   const history = useHistory()
-  const updateEquipmentSubmit = (e) => {
+  const writeOffEquipmentSubmit = (e) => {
     e.preventDefault()
     let data = {}
     const used = writeOffInput['used']
@@ -39,7 +40,7 @@ const ViewEquipment = (props) => {
       data['reason_writeoff_id'] = reasonWriteOff.value
     axios.patch(`api/equipments/write-off/${equipment.id}`, data).then((res) => {
       if (res.data.status === 200) {
-        //TODO перерисовка страницы чтобы показать, что оборудование списано
+        equipment.used = false
         Swal.fire('Списание оборудования', res.data.message, 'success')
         setErrorList([])
       } else {
@@ -79,11 +80,12 @@ const ViewEquipment = (props) => {
   }
   const handleInput = (e) => {
     e.persist()
-    setWriteOffInput({ ...writeOffInput, [e.target.name]: e.target.value })
+    const { target } = e
+    const value = target.type === 'checkbox' ? target.checked : target.value
+    const { name } = target
+    setWriteOffInput({ ...writeOffInput, [name]: value })
   }
   const handleSelect = (e, action) => {
-    console.log(e)
-    console.log(action)
     setWriteOffSelect({ ...writeOffSelect, [action.name]: { ...e, ...action } })
   }
   if (loading) {
@@ -101,14 +103,17 @@ const ViewEquipment = (props) => {
           <CRow>
             <CCol sm={12}>
               <h4 id="equipment-header" className="card-title mb-5">
-                Просмотр оборудования {equipment.equipment.config_item.name}
+                Просмотр оборудования {equipment.equipment?.config_item.name}
               </h4>
             </CCol>
+            {!Boolean(equipment.used) && (
+              <strong className="col-sm-3 mb-3">Данное оборудование списано</strong>
+            )}
           </CRow>
           <h5 className="mb-3">Основная информация</h5>
           <CRow className="mb-3">
             <div className="col-sm-2">Инвентарный номер:</div>
-            <div className="col-sm-10">{equipment.equipment.inventory_number?.number}</div>
+            <div className="col-sm-10">{equipment.equipment?.inventory_number?.number}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Штрих-код:</div>
@@ -116,19 +121,19 @@ const ViewEquipment = (props) => {
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Наименование:</div>
-            <div className="col-sm-10">{equipment.equipment.config_item.name}</div>
+            <div className="col-sm-10">{equipment.equipment?.config_item.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Вид:</div>
-            <div className="col-sm-10">{equipment.equipment.view?.name}</div>
+            <div className="col-sm-10">{equipment.equipment?.view?.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Сорт:</div>
-            <div className="col-sm-10">{equipment.equipment.grade?.name}</div>
+            <div className="col-sm-10">{equipment.equipment?.grade?.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Группа:</div>
-            <div className="col-sm-10">{equipment.equipment.group?.name}</div>
+            <div className="col-sm-10">{equipment.equipment?.group?.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Сотрудник:</div>
@@ -145,23 +150,23 @@ const ViewEquipment = (props) => {
           <h5 className="mb-3">Местоположение</h5>
           <CRow className="mb-3">
             <div className="col-sm-2">Организация:</div>
-            <div className="col-sm-10">{equipment.equipment.organization.name}</div>
+            <div className="col-sm-10">{equipment.equipment?.organization.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Адрес:</div>
-            <div className="col-sm-10">{equipment.equipment.room.address.name}</div>
+            <div className="col-sm-10">{equipment.equipment?.room.address.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Склад/кабинет:</div>
-            <div className="col-sm-10">{equipment.equipment.room.storage}</div>
+            <div className="col-sm-10">{equipment.equipment?.room.storage}</div>
           </CRow>
           <CRow className="mb-4">
             <div className="col-sm-2">Доп.инф.:</div>
             <div className="col-sm-10">{equipment.location}</div>
           </CRow>
           <CRow className="mb-5">
-            {showWriteoff && (
-              <div>
+            {Boolean(equipment.used) && showWriteoff && (
+              <CForm onSubmit={writeOffEquipmentSubmit}>
                 <h5 className="mb-3">Списание</h5>
                 <CRow className="mb-3">
                   <div className="col-sm-2">
@@ -174,14 +179,14 @@ const ViewEquipment = (props) => {
                 </CRow>
                 <CRow className="mb-3">
                   <CFormLabel htmlFor={'selectObject'} className="col-sm-2 col-form-label">
-                    Причина списания:
+                    Причина:
                     <span className={'main-color'}>*</span>
                   </CFormLabel>
                   <div className="col-sm-8">
                     <CreatableSelect
                       placeholder={'Введите или выберите причину списания'}
                       name="reasonWriteOff"
-                      id="selectObject"
+                      id="selectReasonWriteOff"
                       value={writeOffSelect['reasonWriteOff']}
                       onChange={handleSelect}
                       options={writeOffList}
@@ -190,7 +195,12 @@ const ViewEquipment = (props) => {
                 </CRow>
                 <CCol sm={12} className="d-none d-md-block">
                   <CButtonGroup className="float-start">
-                    <CButton color="dark" variant="outline" className="float-start btn-select">
+                    <CButton
+                      type={'submit'}
+                      color="dark"
+                      variant="outline"
+                      className="float-start btn-select"
+                    >
                       Списать
                     </CButton>
                     <CButton
@@ -203,9 +213,9 @@ const ViewEquipment = (props) => {
                     </CButton>
                   </CButtonGroup>
                 </CCol>
-              </div>
+              </CForm>
             )}
-            {!showWriteoff && (
+            {Boolean(equipment.used) && !showWriteoff && (
               <CCol sm={12} className="d-none d-md-block">
                 <CButton
                   onClick={changeShowWriteOff}
@@ -216,6 +226,13 @@ const ViewEquipment = (props) => {
                   Списать
                 </CButton>
               </CCol>
+            )}
+            {!Boolean(equipment.used) && (
+              <CRow>
+                <h5 className="mb-3">Списание</h5>
+                <div className="col-sm-2">Причина:</div>
+                <div className="col-sm-10">{equipment?.reason_writeoff?.name}</div>
+              </CRow>
             )}
           </CRow>
           <CRow className="mb-3">
