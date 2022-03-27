@@ -4,14 +4,9 @@ import {
   CButtonGroup,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CForm,
   CFormInput,
-  CFormLabel,
-  CFormSelect,
-  CInputGroup,
-  CInputGroupText,
   CRow,
 } from '@coreui/react'
 import Select from 'react-select'
@@ -22,6 +17,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import ru from 'date-fns/locale/ru'
 import CreatableSelect from 'react-select/creatable'
+import store from '../../../store'
 
 function addKeyValue(obj, key, data) {
   obj[key] = data
@@ -51,9 +47,10 @@ const CreateList = (props) => {
     base_number: '',
   })
   //const [id, setId] = useState()
-  const address_id = 3
-  const organization_id = 1
-  const storage_id = 43
+  const state = store.getState()
+  const address = state.address
+  const organization = state.organization
+  const storage = state.storage
   const baseList = [
     { value: 1, label: 'Приказ' },
     { value: 2, label: 'Постановление' },
@@ -119,40 +116,42 @@ const CreateList = (props) => {
   }
 
   useEffect(() => {
-    axios.get(`api/one-address/${address_id}`).then((res) => {
+    axios.get(`api/one-address/${address}`).then((res) => {
       if (res.data.status === 200) {
         setSelectAddress(res.data.address)
+        const adr = res.data.address
+        axios.get(`api/one-storage/${storage}/${adr.value}`).then((res) => {
+          if (res.data.status === 200) {
+            let storage = res.data.storage
+            storage['label'] = storage['storage']
+            setSelectStorage(storage)
+          }
+        })
       }
     })
-    axios.get(`api/one-organization/${organization_id}`).then((res) => {
+    axios.get(`api/one-organization/${organization}`).then((res) => {
       if (res.data.status === 200) {
         setSelectOrganization(res.data.organization)
-      }
-    })
-    axios.get(`api/one-storage/${storage_id}`).then((res) => {
-      if (res.data.status === 200) {
-        let storage = res.data.storage
-        storage['label'] = storage['storage']
-        setSelectStorage(storage)
+        const org = res.data.organization
+        axios.get(`api/all-employee/${org.value}`).then((res) => {
+          if (res.data.status === 200) {
+            let mol = res.data.employee
+            mol.map(function (o) {
+              return addKeyValue(o, 'label', o.full_name)
+            })
+            setMolList(mol)
+          }
+        })
+        axios.get(`api/inventory-user/${org.value}`).then((res) => {
+          if (res.data.status === 200) {
+            setCommissionList(res.data.inventory_users)
+          }
+        })
       }
     })
     axios.get(`api/all-inventory-reason/`).then((res) => {
       if (res.data.status === 200) {
         setInventoryReasonList(res.data.inventory_reasons)
-      }
-    })
-    axios.get(`api/all-employee/${organization_id}`).then((res) => {
-      if (res.data.status === 200) {
-        let mol = res.data.employee
-        mol.map(function (o) {
-          return addKeyValue(o, 'label', o.full_name)
-        })
-        setMolList(mol)
-      }
-    })
-    axios.get(`api/inventory-user/${organization_id}`).then((res) => {
-      if (res.data.status === 200) {
-        setCommissionList(res.data.inventory_users)
       }
     })
   }, [])

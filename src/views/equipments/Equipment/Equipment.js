@@ -4,14 +4,19 @@ import axios from 'axios'
 import TableEquipment from './TableEquipment'
 import Swal from 'sweetalert2'
 import { useHistory } from 'react-router-dom'
+import store, { resetFilters } from '../../../store'
+import { useDispatch } from 'react-redux'
+
+function isEmpty(value) {
+  return typeof value === 'string' && value.trim() === ''
+}
 
 const Equipment = () => {
+  const dispath = useDispatch()
+  dispath(resetFilters())
   const history = useHistory()
   const credentialsButtonClick = (e) => {
     e.preventDefault()
-    const data = {
-      //name: loginInput.name,
-    }
     axios({
       url: 'api/equipments/export',
       method: 'GET',
@@ -29,7 +34,19 @@ const Equipment = () => {
 
   const inventoryButtonClick = (e) => {
     e.preventDefault()
-    history.push('/list/create')
+    let errors = []
+    const state = store.getState()
+    const e_org = isEmpty(state.organization)
+    const e_adr = isEmpty(state.address)
+    const e_storage = isEmpty(state.storage)
+    if (e_org) errors.push('Выберите организацию в фильтре "Использование"')
+    if (e_adr) errors.push('Выберите адрес в фильтре "Местоположение"')
+    if (e_storage) errors.push('Выберите склад/кабинет в фильтре "Местоположение"')
+    if (!e_org && !e_adr && !e_storage) {
+      history.push('/list/create')
+    } else {
+      Swal.fire('Инвентаризация', errors.toString(), 'error')
+    }
   }
   const [loading, setLoading] = useState(true)
   const [equipmentList, setEquipmentList] = useState([])

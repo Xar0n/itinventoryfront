@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 import {
@@ -17,14 +16,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import Select from 'react-select'
 import Swal from 'sweetalert2'
-
-const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' },
-]
 
 const Login = () => {
   const history = useHistory()
@@ -50,7 +42,13 @@ const Login = () => {
         if (res.data.status === 200) {
           localStorage.setItem('auth_token', res.data.token)
           localStorage.setItem('auth_name', res.data.username)
-          Swal.fire('Авторизация', res.data.message, 'success')
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: res.data.message,
+            showConfirmButton: false,
+            timer: 1500,
+          })
           history.push('/')
         } else if (res.data.status === 401) {
           Swal.fire('Авторизация', res.data.message, 'warning')

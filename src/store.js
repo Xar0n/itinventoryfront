@@ -1,5 +1,4 @@
 import { createStore } from 'redux'
-import { useState } from 'react'
 
 const SET = 'set'
 const SET_SEARCH = 'set_search'
@@ -7,6 +6,7 @@ const SET_EMPLOYEE = 'set_employee'
 const SET_ORGANIZATION = 'set_organization'
 const SET_ADDRESS = 'set_address'
 const SET_STORAGE = 'set_storage'
+const RESET_FILTERS = 'reset_filters'
 
 const initialState = {
   sidebarShow: false,
@@ -65,6 +65,12 @@ export function changeState(data) {
   }
 }
 
+export function resetFilters() {
+  return {
+    type: RESET_FILTERS,
+  }
+}
+
 const changeStateReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET:
@@ -79,6 +85,8 @@ const changeStateReducer = (state = initialState, action) => {
       return { ...state, address: action.payload }
     case SET_STORAGE:
       return { ...state, storage: action.payload }
+    case RESET_FILTERS:
+      return { ...state, search: '', organization: '', employee: '', address: '', storage: '' }
     default:
       return state
   }

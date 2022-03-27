@@ -25,7 +25,7 @@ import CIcon from '@coreui/icons-react'
 import { cilPlus } from '@coreui/icons'
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { GlobalFilter, SelectColumnFilter } from './FiltersEquipment'
+import { GlobalFilter, SelectColumnFilter } from './FiltersList'
 import {
   setAddressFilter,
   setEmployeeFilter,
@@ -40,7 +40,7 @@ function objectByHeader(array, header) {
   return array[index]
 }
 // eslint-disable-next-line react/prop-types
-function TableEquipment({ columns, data }) {
+function TableList({ columns, data }) {
   const history = useHistory()
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const defaultColumn = React.useMemo(
@@ -81,31 +81,11 @@ function TableEquipment({ columns, data }) {
     useSortBy,
     usePagination,
   )
-
-  const { globalFilter, pageIndex, pageSize, filters } = state
-  const objectEmployee = objectByHeader(allColumns, 'Сотрудник')
+  const { globalFilter, pageIndex, pageSize } = state
+  /*const objectEmployee = objectByHeader(allColumns, 'Сотрудник')
   const objectOrganization = objectByHeader(allColumns, 'Организация')
   const objectAddress = objectByHeader(allColumns, 'Адрес')
-  const objectStorage = objectByHeader(allColumns, 'Хранилище')
-  if (globalFilter) {
-    dispath(setSearchFilter(globalFilter))
-  }
-  const org = filters.find((e) => e.id === 'equipment.organization.name')
-  if (org) {
-    dispath(setOrganizationFilter(org.value))
-  }
-  const adr = filters.find((e) => e.id === 'equipment.room.address.name')
-  if (adr) {
-    dispath(setAddressFilter(adr.value))
-  }
-  const stor = filters.find((e) => e.id === 'equipment.room.storage')
-  if (stor) {
-    dispath(setStorageFilter(stor.value))
-  }
-  const emp = filters.find((e) => e.id === 'employee.full_name')
-  if (emp) {
-    dispath(setEmployeeFilter(emp.value))
-  }
+  const objectStorage = objectByHeader(allColumns, 'Хранилище')*/
   return (
     <>
       <CRow className={'mb-3'}>
@@ -118,7 +98,7 @@ function TableEquipment({ columns, data }) {
         </CCol>
         <CCol sm={4} className="d-none d-md-block">
           <CButtonGroup className="float-end">
-            <CDropdown className="float-end mx-1">
+            {/* <CDropdown className="float-end mx-1">
               <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Местоположение
               </CDropdownToggle>
@@ -136,8 +116,8 @@ function TableEquipment({ columns, data }) {
                   {objectStorage.canFilter ? objectStorage.render('Filter') : null}
                 </CDropdownItemPlain>
               </CDropdownMenu>
-            </CDropdown>
-            <CDropdown className="float-end mx-1">
+            </CDropdown>*/}
+            {/* <CDropdown className="float-end mx-1">
               <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Использование
               </CDropdownToggle>
@@ -149,13 +129,13 @@ function TableEquipment({ columns, data }) {
                   {objectOrganization.canFilter ? objectOrganization.render('Filter') : null}
                 </CDropdownItemPlain>
                 <CDropdownItemPlain>
-                  <div>Выберите сотрудника:</div>
+                  <div>Выберите пользователя:</div>
                 </CDropdownItemPlain>
                 <CDropdownItemPlain>
                   {objectEmployee.canFilter ? objectEmployee.render('Filter') : null}
                 </CDropdownItemPlain>
               </CDropdownMenu>
-            </CDropdown>
+            </CDropdown>*/}
             <CDropdown className="float-end mx-1">
               <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Поля
@@ -174,6 +154,14 @@ function TableEquipment({ columns, data }) {
                 ))}
               </CDropdownMenu>
             </CDropdown>
+            <div className="float-end mx-1">
+              <Link
+                className="btn btn-outline-dark px-4 float-end btn-select"
+                to={'equipment/store'}
+              >
+                <CIcon icon={cilPlus} />
+              </Link>
+            </div>
           </CButtonGroup>
         </CCol>
       </CRow>
@@ -271,4 +259,4 @@ function TableEquipment({ columns, data }) {
   )
 }
 
-export default TableEquipment
+export default TableList

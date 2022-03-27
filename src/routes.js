@@ -1,6 +1,7 @@
 import React from 'react'
 
 const Object = React.lazy(() => import('./views/objects/Object/ObjectE'))
+const List = React.lazy(() => import('./views/lists/List/List'))
 const Equipment = React.lazy(() => import('./views/equipments/Equipment/Equipment'))
 const CreateEquipment = React.lazy(() =>
   import('./views/equipments/CreateEquipment/CreateEquipment'),
@@ -23,7 +24,7 @@ const routes = [
   { path: '/equipment/edit/:id', name: 'Редактирование', component: EditEquipment },
   { path: '/equipment/:id', exact: true, name: 'Просмотр', component: ViewEquipment },
 
-  { path: '/list', name: 'Ведомости', component: Equipment, exact: true },
+  { path: '/list', name: 'Ведомости', component: List, exact: true },
   { path: '/list/create', name: 'Создание', component: CreateList, exact: true },
   { path: '/list/:id', exact: true, name: 'Просмотр', component: ViewList },
 ]
