@@ -20,9 +20,7 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { Link, useHistory } from 'react-router-dom'
-import CIcon from '@coreui/icons-react'
-import { cilPlus } from '@coreui/icons'
+import { useHistory } from 'react-router-dom'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { GlobalFilter, SelectColumnFilter } from './FiltersEquipment'
@@ -74,7 +72,7 @@ function TableEquipment({ columns, data }) {
       columns,
       data,
       defaultColumn,
-      initialState: { pageIndex: 0, hiddenColumns: ['equipment.view.name'] },
+      initialState: { pageIndex: 0, pageSize: 25, hiddenColumns: ['equipment.view.name'] },
     },
     useGlobalFilter,
     useFilters,

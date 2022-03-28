@@ -399,7 +399,7 @@ const CreateList = (props) => {
                     variant="outline"
                     className="mx-0 btn-select"
                   >
-                    Создать
+                    Сформировать ведомость
                   </CButton>
                   <Link to={`/list`} className="btn btn-outline-dark mx-4 btn-select">
                     Отменить

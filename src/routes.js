@@ -3,9 +3,6 @@ import React from 'react'
 const Object = React.lazy(() => import('./views/objects/Object/ObjectE'))
 const List = React.lazy(() => import('./views/lists/List/List'))
 const Equipment = React.lazy(() => import('./views/equipments/Equipment/Equipment'))
-const CreateEquipment = React.lazy(() =>
-  import('./views/equipments/CreateEquipment/CreateEquipment'),
-)
 const ViewEquipment = React.lazy(() => import('./views/equipments/ViewEquipment/ViewEquipment'))
 const EditEquipment = React.lazy(() => import('./views/equipments/EditEquipment/EditEquipment'))
 const CreateObject = React.lazy(() => import('./views/objects/CreateObject/CreateObject'))
@@ -20,7 +17,6 @@ const routes = [
   { path: '/object', name: 'Объекты', component: Object, exact: true },
   { path: '/object/create', name: 'Создание', component: CreateObject },
   { path: '/equipment', name: 'Оборудование', component: Equipment, exact: true },
-  { path: '/equipment/create', name: 'Создание', component: CreateEquipment, exact: true },
   { path: '/equipment/edit/:id', name: 'Редактирование', component: EditEquipment },
   { path: '/equipment/:id', exact: true, name: 'Просмотр', component: ViewEquipment },
 

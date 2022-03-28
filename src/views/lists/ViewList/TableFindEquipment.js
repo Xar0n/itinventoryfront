@@ -5,10 +5,16 @@ import {
   useTable,
   useAsyncDebounce,
   usePagination,
-  useRowSelect,
 } from 'react-table'
 import {
+  CButton,
+  CButtonGroup,
   CCol,
+  CDropdown,
+  CDropdownItem,
+  CDropdownItemPlain,
+  CDropdownMenu,
+  CDropdownToggle,
   CFormInput,
   CFormLabel,
   CFormSelect,
@@ -23,12 +29,14 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { Link, useHistory } from 'react-router-dom'
+import CIcon from '@coreui/icons-react'
+import { cibAddthis, cilPlus } from '@coreui/icons'
 import React, { useEffect, useState } from 'react'
+import Select from 'react-select'
 import _, { isNull } from 'underscore'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import store, { setSearchFilter } from '../../../store'
-import { IndeterminateCheckbox } from './Checkbox'
 
 function arrUnique(arr) {
   var cleaned = []
@@ -74,7 +82,7 @@ function GlobalFilter({ preGlobalFilteredRows, filter, setFilter }) {
 }
 
 // eslint-disable-next-line react/prop-types
-function TableInventoryEquipment({ columns, data }) {
+function TableFindEquipment({ columns, data, list_id }) {
   const history = useHistory()
   const dispath = useDispatch()
   const {
@@ -96,7 +104,6 @@ function TableInventoryEquipment({ columns, data }) {
     gotoPage,
     setPageSize,
     pageCount,
-    selectedFlatRows,
   } = useTable(
     {
       columns,
@@ -107,24 +114,6 @@ function TableInventoryEquipment({ columns, data }) {
     useFilters,
     useSortBy,
     usePagination,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        ...columns,
-        {
-          id: 'selection',
-          // eslint-disable-next-line react/prop-types
-          Header: 'Найдено',
-          // eslint-disable-next-line react/prop-types
-          Cell: ({ row }) => (
-            <div>
-              {/* eslint-disable-next-line react/prop-types */}
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-      ])
-    },
   )
 
   const { globalFilter, pageIndex, pageSize } = state
@@ -133,6 +122,14 @@ function TableInventoryEquipment({ columns, data }) {
     <>
       <CRow className={'mb-3'}>
         <CCol sm={12}>
+          <div className="float-end mx-1">
+            <Link
+              className="btn btn-outline-dark btn-select px-4 float-end"
+              to={`/list/${list_id}/create`}
+            >
+              <CIcon icon={cilPlus} />
+            </Link>
+          </div>
           <GlobalFilter
             preGlobalFilteredRows={preGlobalFilteredRows}
             filter={globalFilter}
@@ -226,4 +223,4 @@ function TableInventoryEquipment({ columns, data }) {
   )
 }
 
-export default TableInventoryEquipment
+export default TableFindEquipment

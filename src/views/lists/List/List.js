@@ -60,19 +60,6 @@ const List = () => {
             disableFilters: true,
           },
           {
-            Header: 'Дата начала/окончания',
-            accessor: 'date_start',
-            Cell: (props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <span className="date_start">{props.value}</span>
-                <br />
-                <span className="email">2</span>
-              </div>
-            ),
-            disableFilters: true,
-          },
-          {
             Header: 'Основание',
             accessor: 'basis_full',
             disableFilters: true,
@@ -84,22 +71,16 @@ const List = () => {
           },
           {
             Header: 'В работе',
-            accessor: 'in_works',
+            accessor: (d) => {
+              if (d.in_works) return '+'
+              return '-'
+            },
             disableFilters: true,
           },
           {
             Header: 'Создатель',
             accessor: 'creator.name',
-            disableFilters: true,
-          },
-          {
-            Header: 'Дата создания',
-            id: 'created_at',
-            accessor: (d) => {
-              let dat = new Date(d.created_at)
-              return dat.toLocaleDateString() + ' ' + dat.toLocaleTimeString()
-            },
-            disableFilters: true,
+            disableFilters: false,
           },
         ],
       },
@@ -109,16 +90,45 @@ const List = () => {
           {
             Header: 'Организация',
             accessor: 'organization.name',
-            disableFilters: true,
+            disableFilters: false,
           },
           {
             Header: 'Адрес',
             accessor: 'address.name',
+            disableFilters: false,
+          },
+          {
+            Header: 'Хранилище',
+            accessor: 'room.storage',
+            disableFilters: false,
+          },
+        ],
+      },
+      {
+        Header: 'Время',
+        columns: [
+          {
+            Header: 'Дата начала/окончания',
+            accessor: (d) => {
+              let start = new Date(d.date_start)
+              let end = new Date(d.date_end)
+              return (
+                <div>
+                  <span>{start.toLocaleDateString() + ' ' + start.toLocaleTimeString()}</span>
+                  <br />
+                  <span>{end.toLocaleDateString() + ' ' + end.toLocaleTimeString()}</span>
+                </div>
+              )
+            },
             disableFilters: true,
           },
           {
-            Header: 'Склад/кабинет',
-            accessor: 'room.storage',
+            Header: 'Дата создания',
+            id: 'created_at',
+            accessor: (d) => {
+              let dat = new Date(d.created_at)
+              return dat.toLocaleDateString() + ' ' + dat.toLocaleTimeString()
+            },
             disableFilters: true,
           },
         ],

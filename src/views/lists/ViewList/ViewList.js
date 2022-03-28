@@ -3,10 +3,13 @@ import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/rea
 import axios from 'axios'
 import TableInventoryEquipment from './TableInventoryEquipment'
 import Swal from 'sweetalert2'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import TableFindEquipment from './TableFindEquipment'
 
-const ViewList = () => {
+const ViewList = (props) => {
   const history = useHistory()
+  // eslint-disable-next-line react/prop-types
+  const list_id = props.match.params.id
   const credentialsButtonClick = (e) => {
     e.preventDefault()
     const data = {
@@ -27,17 +30,22 @@ const ViewList = () => {
     })
   }
   const [loading, setLoading] = useState(true)
-  const [equipmentList, setEquipmentList] = useState([])
+  const [inventoryEquipmentList, setInventoryEquipmentList] = useState([])
+  const [findEquipmentList, setFindEquipmentList] = useState([])
+  const [list, setList] = useState([])
+  const list_created_at = new Date(list.created_at)
   useEffect(() => {
-    axios.get('/api/equipments').then((response) => {
-      if (response.status === 200) {
+    axios.get(`/api/lists/${list_id}`).then((response) => {
+      if (response.data.status === 200) {
         // eslint-disable-next-line react-hooks/rules-of-hooks,react-hooks/exhaustive-deps
-        setEquipmentList(response.data.equipments)
+        setList(response.data.list)
+        setInventoryEquipmentList(response.data.list.equipments_lists)
+        setFindEquipmentList(response.data.list.equipment_finds)
       }
       setLoading(false)
     })
   }, [])
-  const columns = React.useMemo(
+  const columnsInventory = React.useMemo(
     () => [
       {
         Header: 'Основное',
@@ -48,11 +56,72 @@ const ViewList = () => {
           },
           {
             Header: 'Название',
-            accessor: 'equipment.config_item.name',
+            accessor: 'equipment_num.equipment.config_item.name',
           },
           {
             Header: 'Инвентарный номер',
-            accessor: 'equipment.inventory_number.number',
+            accessor: 'equipment_num.equipment.inventory_number.number',
+          },
+          {
+            Header: 'Штрих-код',
+            accessor: 'equipment_num.barcode.code',
+          },
+        ],
+      },
+      {
+        Header: 'Местоположение',
+        columns: [
+          {
+            Header: 'Хранилище',
+            accessor: 'equipment_num.equipment.room.storage',
+          },
+          {
+            Header: 'Доп.инф.',
+            accessor: 'equipment_num.location',
+          },
+          {
+            Header: 'Сотрудник',
+            accessor: 'equipment_num.employee.full_name',
+          },
+        ],
+      },
+      {
+        Header: 'Дополнительное',
+        columns: [
+          {
+            Header: 'Вид',
+            accessor: 'equipment_num.equipment.view.name',
+          },
+          {
+            Header: 'Сорт',
+            accessor: 'equipment_num.equipment.grade.name',
+          },
+          {
+            Header: 'Группа',
+            accessor: 'equipment_num.equipment.group.name',
+          },
+        ],
+      },
+    ],
+    [],
+  )
+
+  const columnsFind = React.useMemo(
+    () => [
+      {
+        Header: 'Основное',
+        columns: [
+          {
+            Header: '№',
+            accessor: 'id',
+          },
+          {
+            Header: 'Название',
+            accessor: 'config_item.name',
+          },
+          {
+            Header: 'Инвентарный номер',
+            accessor: 'inventory_number.number',
           },
           {
             Header: 'Штрих-код',
@@ -64,16 +133,8 @@ const ViewList = () => {
         Header: 'Местоположение',
         columns: [
           {
-            Header: 'Организация',
-            accessor: 'equipment.organization.name',
-          },
-          {
-            Header: 'Адрес',
-            accessor: 'equipment.room.address.name',
-          },
-          {
             Header: 'Хранилище',
-            accessor: 'equipment.room.storage',
+            accessor: 'room.storage',
           },
           {
             Header: 'Доп.инф.',
@@ -82,23 +143,6 @@ const ViewList = () => {
           {
             Header: 'Сотрудник',
             accessor: 'employee.full_name',
-          },
-        ],
-      },
-      {
-        Header: 'Дополнительное',
-        columns: [
-          {
-            Header: 'Вид',
-            accessor: 'equipment.view.name',
-          },
-          {
-            Header: 'Сорт',
-            accessor: 'equipment.grade.name',
-          },
-          {
-            Header: 'Группа',
-            accessor: 'equipment.group.name',
           },
         ],
       },
@@ -118,13 +162,13 @@ const ViewList = () => {
       <CCard className="mb-5">
         <CCardBody>
           <CRow className={'mb-5'}>
-            <CCol sm={5}>
+            <CCol sm={12}>
               <h4 id="equipment-header" className="card-title mb-0">
-                Проведение инвентаризации
+                Проведение инвентаризации. Ведомость № {list.id} от{' '}
+                {list_created_at.toLocaleDateString() + ' ' + list_created_at.toLocaleTimeString()}
               </h4>
             </CCol>
           </CRow>
-
           <CRow className={'mb-3'}>
             <CCol sm={5}>
               <h5 className="mb-3">Инвентаризируемое оборудование</h5>
@@ -140,7 +184,25 @@ const ViewList = () => {
               </CButtonGroup>
             </CCol>
           </CRow>
-          <TableInventoryEquipment columns={columns} data={equipmentList} />
+          <TableInventoryEquipment columns={columnsInventory} data={inventoryEquipmentList} />
+          <CRow className={'mb-3'}>
+            <CCol sm={5}>
+              <h5 className="mb-3">Найденное оборудование</h5>
+            </CCol>
+          </CRow>
+          <TableFindEquipment columns={columnsFind} data={findEquipmentList} list_id={list.id} />
+          <CRow className="mb-3">
+            <CCol sm={12} className="d-none d-md-block">
+              <CButtonGroup className="float-start">
+                <Link to={`/list`} className="btn btn-outline-dark mx-0 btn-select">
+                  Назад к формированию ведомости
+                </Link>
+                <CButton type={'submit'} color="dark" variant="outline" className="mx-4 btn-select">
+                  Закрыть ведомость
+                </CButton>
+              </CButtonGroup>
+            </CCol>
+          </CRow>
         </CCardBody>
       </CCard>
     </>

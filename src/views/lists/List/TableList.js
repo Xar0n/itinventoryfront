@@ -26,13 +26,6 @@ import { cilPlus } from '@coreui/icons'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { GlobalFilter, SelectColumnFilter } from './FiltersList'
-import {
-  setAddressFilter,
-  setEmployeeFilter,
-  setOrganizationFilter,
-  setSearchFilter,
-  setStorageFilter,
-} from '../../../store'
 function objectByHeader(array, header) {
   let index = array.findIndex(function (item, i) {
     return item.Header === header
@@ -74,7 +67,7 @@ function TableList({ columns, data }) {
       columns,
       data,
       defaultColumn,
-      initialState: { pageIndex: 0, hiddenColumns: ['equipment.view.name'] },
+      initialState: { pageIndex: 0, pageSize: 25 },
     },
     useGlobalFilter,
     useFilters,
@@ -82,10 +75,10 @@ function TableList({ columns, data }) {
     usePagination,
   )
   const { globalFilter, pageIndex, pageSize } = state
-  /*const objectEmployee = objectByHeader(allColumns, 'Сотрудник')
+  const objectCreator = objectByHeader(allColumns, 'Создатель')
   const objectOrganization = objectByHeader(allColumns, 'Организация')
   const objectAddress = objectByHeader(allColumns, 'Адрес')
-  const objectStorage = objectByHeader(allColumns, 'Хранилище')*/
+  const objectStorage = objectByHeader(allColumns, 'Хранилище')
   return (
     <>
       <CRow className={'mb-3'}>
@@ -98,7 +91,7 @@ function TableList({ columns, data }) {
         </CCol>
         <CCol sm={4} className="d-none d-md-block">
           <CButtonGroup className="float-end">
-            {/* <CDropdown className="float-end mx-1">
+            <CDropdown className="float-end mx-1">
               <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Местоположение
               </CDropdownToggle>
@@ -116,8 +109,8 @@ function TableList({ columns, data }) {
                   {objectStorage.canFilter ? objectStorage.render('Filter') : null}
                 </CDropdownItemPlain>
               </CDropdownMenu>
-            </CDropdown>*/}
-            {/* <CDropdown className="float-end mx-1">
+            </CDropdown>
+            <CDropdown className="float-end mx-1">
               <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Использование
               </CDropdownToggle>
@@ -132,10 +125,10 @@ function TableList({ columns, data }) {
                   <div>Выберите пользователя:</div>
                 </CDropdownItemPlain>
                 <CDropdownItemPlain>
-                  {objectEmployee.canFilter ? objectEmployee.render('Filter') : null}
+                  {objectCreator.canFilter ? objectCreator.render('Filter') : null}
                 </CDropdownItemPlain>
               </CDropdownMenu>
-            </CDropdown>*/}
+            </CDropdown>
             <CDropdown className="float-end mx-1">
               <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Поля
@@ -193,7 +186,7 @@ function TableList({ columns, data }) {
                 scope="row"
                 {...row.getRowProps()}
                 onClick={() => {
-                  history.push(`equipment/${row.values['id']}`)
+                  history.push(`list/${row.values['id']}`)
                 }}
               >
                 {row.cells.map((cell) => {
@@ -208,7 +201,7 @@ function TableList({ columns, data }) {
         </CTableBody>
       </CTable>
       <CRow className="mb-auto">
-        <CFormLabel htmlFor={'selectStorage'} className="col-sm-auto col-form-label">
+        <CFormLabel className="col-sm-auto col-form-label">
           <span>
             Страница{' '}
             <strong>
