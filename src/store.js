@@ -6,6 +6,7 @@ const SET_EMPLOYEE = 'set_employee'
 const SET_ORGANIZATION = 'set_organization'
 const SET_ADDRESS = 'set_address'
 const SET_STORAGE = 'set_storage'
+const SET_RESULT_INVENTORY = 'set_result_inventory'
 const RESET_FILTERS = 'reset_filters'
 
 const initialState = {
@@ -16,6 +17,15 @@ const initialState = {
   organization: '',
   address: '',
   storage: '',
+  result_inventory: [],
+}
+
+export function setResultInventory(data) {
+  return {
+    type: SET_RESULT_INVENTORY,
+    payload: data,
+    info: 'Задать значение результата проведенной инвентаризации',
+  }
 }
 
 export function setSearchFilter(data) {
@@ -85,6 +95,8 @@ const changeStateReducer = (state = initialState, action) => {
       return { ...state, address: action.payload }
     case SET_STORAGE:
       return { ...state, storage: action.payload }
+    case SET_RESULT_INVENTORY:
+      return { ...state, result_inventory: action.payload }
     case RESET_FILTERS:
       return { ...state, search: '', organization: '', employee: '', address: '', storage: '' }
     default:

@@ -41,9 +41,16 @@ const ViewEquipment = (props) => {
     axios.patch(`api/equipments/write-off/${equipment.id}`, data).then((res) => {
       if (res.data.status === 200) {
         equipment.used = false
-        Swal.fire('Списание оборудования', res.data.message, 'success')
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: res.data.message,
+          showConfirmButton: false,
+          timer: 1500,
+        })
         setErrorList([])
       } else {
+        Swal.fire('Списание оборудования', res.data.message, 'success')
         setErrorList(res.data.errors)
       }
     })

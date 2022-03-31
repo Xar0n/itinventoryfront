@@ -1,14 +1,12 @@
+import { useGlobalFilter, useFilters, useSortBy, useTable, usePagination } from 'react-table'
 import {
-  useGlobalFilter,
-  useFilters,
-  useSortBy,
-  useTable,
-  useAsyncDebounce,
-  usePagination,
-  useRowSelect,
-} from 'react-table'
-import {
+  CButtonGroup,
   CCol,
+  CDropdown,
+  CDropdownItem,
+  CDropdownItemPlain,
+  CDropdownMenu,
+  CDropdownToggle,
   CFormInput,
   CFormLabel,
   CFormSelect,
@@ -23,59 +21,27 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { Link, useHistory } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
-import _, { isNull } from 'underscore'
-import axios from 'axios'
+import CIcon from '@coreui/icons-react'
+import { cilPlus } from '@coreui/icons'
+import React from 'react'
 import { useDispatch } from 'react-redux'
-import store, { setResultInventory, setSearchFilter } from '../../../store'
-import { IndeterminateCheckbox } from './Checkbox'
-
-function arrUnique(arr) {
-  var cleaned = []
-  arr.forEach(function (itm) {
-    var unique = true
-    cleaned.forEach(function (itm2) {
-      if (_.isEqual(itm, itm2)) unique = false
-    })
-    if (unique) cleaned.push(itm)
-  })
-  return cleaned
-}
-
+import { GlobalFilter, SelectColumnFilter } from './FiltersReport'
 function objectByHeader(array, header) {
   let index = array.findIndex(function (item, i) {
     return item.Header === header
   })
   return array[index]
 }
-
 // eslint-disable-next-line react/prop-types
-function GlobalFilter({ preGlobalFilteredRows, filter, setFilter }) {
-  // eslint-disable-next-line react/prop-types
-  const count = preGlobalFilteredRows.length
-  const [value, setValue] = React.useState(filter)
-  const onChange = useAsyncDebounce((value) => {
-    setFilter(value || undefined)
-  }, 200)
-  return (
-    <div className="col-sm-3 float-end">
-      <CFormInput
-        type="text"
-        id="inputSearch"
-        placeholder={`Поиск среди ${count} строк`}
-        value={value || ''}
-        onChange={(e) => {
-          setValue(e.target.value)
-          onChange(e.target.value)
-        }}
-      />
-    </div>
-  )
-}
-
-// eslint-disable-next-line react/prop-types
-function TableInventoryEquipment({ columns, data }) {
+function TableReport({ columns, data }) {
   const history = useHistory()
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const defaultColumn = React.useMemo(
+    () => ({
+      Filter: SelectColumnFilter,
+    }),
+    [],
+  )
   const dispath = useDispatch()
   const {
     getTableProps,
@@ -96,49 +62,92 @@ function TableInventoryEquipment({ columns, data }) {
     gotoPage,
     setPageSize,
     pageCount,
-    selectedFlatRows,
   } = useTable(
     {
       columns,
       data,
+      defaultColumn,
       initialState: { pageIndex: 0, pageSize: 25 },
     },
     useGlobalFilter,
     useFilters,
     useSortBy,
     usePagination,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        ...columns,
-        {
-          id: 'selection',
-          // eslint-disable-next-line react/prop-types
-          Header: 'Найдено',
-          // eslint-disable-next-line react/prop-types
-          Cell: ({ row }) => (
-            <div>
-              {/* eslint-disable-next-line react/prop-types */}
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-      ])
-    },
   )
-
   const { globalFilter, pageIndex, pageSize } = state
-  dispath(setSearchFilter('4566'))
-  dispath(setResultInventory(selectedFlatRows))
+  const objectCreator = objectByHeader(allColumns, 'Создатель')
+  const objectOrganization = objectByHeader(allColumns, 'Организация')
+  const objectAddress = objectByHeader(allColumns, 'Адрес')
+  const objectStorage = objectByHeader(allColumns, 'Хранилище')
   return (
     <>
       <CRow className={'mb-3'}>
-        <CCol sm={12}>
+        <CCol sm={8}>
           <GlobalFilter
             preGlobalFilteredRows={preGlobalFilteredRows}
             filter={globalFilter}
             setFilter={setGlobalFilter}
           />
+        </CCol>
+        <CCol sm={4} className="d-none d-md-block">
+          <CButtonGroup className="float-end">
+            <CDropdown className="float-end mx-1">
+              <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
+                Местоположение
+              </CDropdownToggle>
+              <CDropdownMenu className={'ul'}>
+                <CDropdownItemPlain>
+                  <div>Выберите адрес:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectAddress.canFilter ? objectAddress.render('Filter') : null}
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  <div>Выберите склад/кабинет:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectStorage.canFilter ? objectStorage.render('Filter') : null}
+                </CDropdownItemPlain>
+              </CDropdownMenu>
+            </CDropdown>
+            <CDropdown className="float-end mx-1">
+              <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
+                Использование
+              </CDropdownToggle>
+              <CDropdownMenu className={'ul'}>
+                <CDropdownItemPlain>
+                  <div>Выберите организацию:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectOrganization.canFilter ? objectOrganization.render('Filter') : null}
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  <div>Выберите пользователя:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectCreator.canFilter ? objectCreator.render('Filter') : null}
+                </CDropdownItemPlain>
+              </CDropdownMenu>
+            </CDropdown>
+            <CDropdown className="float-end mx-1">
+              <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
+                Поля
+              </CDropdownToggle>
+              <CDropdownMenu>
+                {allColumns.map((column) => (
+                  // eslint-disable-next-line react/jsx-key
+                  <CDropdownItem key={column.id}>
+                    <div>
+                      <label>
+                        <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
+                        {column.render('Header')}
+                      </label>
+                    </div>
+                  </CDropdownItem>
+                ))}
+              </CDropdownMenu>
+            </CDropdown>
+          </CButtonGroup>
         </CCol>
       </CRow>
       <CTable bordered {...getTableProps()} className={'selectTable'}>
@@ -153,6 +162,7 @@ function TableInventoryEquipment({ columns, data }) {
                     {column.render('Header')}
                     <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
                   </div>
+                  {/*<div>{column.canFilter ? column.render('Filter') : null}</div>*/}
                 </CTableHeaderCell>
               ))}
             </CTableRow>
@@ -163,7 +173,14 @@ function TableInventoryEquipment({ columns, data }) {
             prepareRow(row)
             return (
               // eslint-disable-next-line react/jsx-key
-              <CTableRow className={'link'} scope="row" {...row.getRowProps()}>
+              <CTableRow
+                className={'link'}
+                scope="row"
+                {...row.getRowProps()}
+                onClick={() => {
+                  history.push(`report/${row.values['id']}`)
+                }}
+              >
                 {row.cells.map((cell) => {
                   return (
                     // eslint-disable-next-line react/jsx-key
@@ -175,8 +192,8 @@ function TableInventoryEquipment({ columns, data }) {
           })}
         </CTableBody>
       </CTable>
-      <CRow className="mb-5">
-        <CFormLabel htmlFor={'selectStorage'} className="col-sm-auto col-form-label">
+      <CRow className="mb-auto">
+        <CFormLabel className="col-sm-auto col-form-label">
           <span>
             Страница{' '}
             <strong>
@@ -227,4 +244,4 @@ function TableInventoryEquipment({ columns, data }) {
   )
 }
 
-export default TableInventoryEquipment
+export default TableReport

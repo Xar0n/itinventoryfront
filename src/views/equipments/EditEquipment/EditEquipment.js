@@ -4,12 +4,9 @@ import {
   CButtonGroup,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CFormInput,
   CFormLabel,
-  CInputGroup,
-  CInputGroupText,
   CRow,
 } from '@coreui/react'
 import Select from 'react-select'
@@ -49,9 +46,15 @@ const EditEquipment = (props) => {
     data['object_id'] = selectObject.value
     axios.patch(`api/equipments/${equipment.id}`, data).then((res) => {
       if (res.data.status === 200) {
-        Swal.fire('Редактирование оборудования', res.data.message, 'success')
-        history.push(`/equipment/${equipment.id}`)
         setErrorList([])
+        history.push(`/equipment/${equipment.id}`)
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: res.data.message,
+          showConfirmButton: false,
+          timer: 1500,
+        })
       } else {
         setErrorList(res.data.errors)
       }
