@@ -22,12 +22,9 @@ const ViewList = (props) => {
     })
     axios.post('api/reports', formData).then((res) => {
       if (res.data.status === 200) {
-        history.push('/reports/')
-        Swal.fire('Проведение инвентаризации', res.data.message, 'success')
-        //  setErrorList([])
+        history.push(`/report/${res.data.report_id}`)
       } else {
         Swal.fire('Проведение инвентаризации', res.data.message, 'error')
-        //setErrorList(res.data.errors)
       }
     })
   }

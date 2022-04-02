@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/react'
 import axios from 'axios'
-import TableInventoryEquipment from './TableInventoryEquipment'
+import TableFoundEquipment from './TableFoundEquipment'
 import Swal from 'sweetalert2'
 import { Link, useHistory } from 'react-router-dom'
 import TableFindEquipment from './TableFindEquipment'
@@ -12,8 +12,9 @@ const ViewReport = (props) => {
   // eslint-disable-next-line react/prop-types
   const report_id = props.match.params.id
   const [loading, setLoading] = useState(true)
-  const [inventoryEquipmentReport, setInventoryEquipmentReport] = useState([])
-  const [findEquipmentReport, setFindEquipmentReport] = useState([])
+  const [foundEquipment, setFoundEquipment] = useState([])
+  const [lostEquipment, setLostEquipment] = useState([])
+  const [findEquipment, setFindEquipment] = useState([])
   const [report, setReport] = useState([])
   const report_created_at = new Date(report.created_at)
   useEffect(() => {
@@ -23,8 +24,9 @@ const ViewReport = (props) => {
         if (!in_works) {
           // eslint-disable-next-line react-hooks/rules-of-hooks,react-hooks/exhaustive-deps
           setReport(response.data.report)
-          setInventoryEquipmentReport(response.data.report.list.equipments_lists)
-          setFindEquipmentReport(response.data.report.list.equipment_finds)
+          setFoundEquipment(response.data.equipment_found)
+          setLostEquipment(response.data.equipment_lost)
+          setFindEquipment(response.data.equipment_find)
         } else {
           history.push('/report')
           Swal.fire('Просмотр отчета', 'Ошибка формирования отчета', 'error')
@@ -33,62 +35,64 @@ const ViewReport = (props) => {
       setLoading(false)
     })
   }, [])
-  const columnsInventory = React.useMemo(
+  const columnsFound = React.useMemo(
     () => [
       {
-        Header: 'Основное',
-        columns: [
-          {
-            Header: '№',
-            accessor: 'id',
-          },
-          {
-            Header: 'Название',
-            accessor: 'equipment_num.equipment.config_item.name',
-          },
-          {
-            Header: 'Инвентарный номер',
-            accessor: 'equipment_num.equipment.inventory_number.number',
-          },
-          {
-            Header: 'Штрих-код',
-            accessor: 'equipment_num.barcode.code',
-          },
-        ],
+        Header: '№',
+        accessor: 'id',
       },
       {
-        Header: 'Местоположение',
-        columns: [
-          {
-            Header: 'Хранилище',
-            accessor: 'equipment_num.equipment.room.storage',
-          },
-          {
-            Header: 'Доп.инф.',
-            accessor: 'equipment_num.location',
-          },
-          {
-            Header: 'Сотрудник',
-            accessor: 'equipment_num.employee.full_name',
-          },
-        ],
+        Header: 'Название',
+        accessor: 'equipment_num.equipment.config_item.name',
       },
       {
-        Header: 'Дополнительное',
-        columns: [
-          {
-            Header: 'Вид',
-            accessor: 'equipment_num.equipment.view.name',
-          },
-          {
-            Header: 'Сорт',
-            accessor: 'equipment_num.equipment.grade.name',
-          },
-          {
-            Header: 'Группа',
-            accessor: 'equipment_num.equipment.group.name',
-          },
-        ],
+        Header: 'Инвентарный номер',
+        accessor: 'equipment_num.equipment.inventory_number.number',
+      },
+      {
+        Header: 'Штрих-код',
+        accessor: 'equipment_num.barcode.code',
+      },
+      {
+        Header: 'Хранилище',
+        accessor: 'equipment_num.equipment.room.storage',
+      },
+      {
+        Header: 'Доп.инф.',
+        accessor: 'equipment_num.location',
+      },
+      {
+        Header: 'Сотрудник',
+        accessor: 'equipment_num.employee.full_name',
+      },
+      {
+        Header: 'Вид',
+        accessor: 'equipment_num.equipment.view.name',
+      },
+      {
+        Header: 'Сорт',
+        accessor: 'equipment_num.equipment.grade.name',
+      },
+      {
+        Header: 'Группа',
+        accessor: 'equipment_num.equipment.group.name',
+      },
+      {
+        Header: 'Фактическое количество',
+        accessor: (d) => {
+          return 5
+        },
+        Footer: (info) => {
+          const total = React.useMemo(() => info.rows.reduce((sum, row) => 1 + sum, 0), [info.rows])
+
+          return <>Всего: {total}</>
+        },
+      },
+      {
+        Header: 'Количество по данным учета',
+        accessor: (d) => {
+          return 5
+        },
       },
     ],
     [],
@@ -198,13 +202,13 @@ const ViewReport = (props) => {
               <h5 className="mb-3">Найденное оборудование</h5>
             </CCol>
           </CRow>
-          <TableInventoryEquipment columns={columnsInventory} data={inventoryEquipmentReport} />
+          <TableFoundEquipment columns={columnsFound} data={foundEquipment} />
           <CRow className={'mb-3'}>
             <CCol sm={5}>
               <h5 className="mb-3">Излишки оборудования</h5>
             </CCol>
           </CRow>
-          <TableFindEquipment columns={columnsFind} data={findEquipmentReport} />
+          <TableFindEquipment columns={columnsFind} data={findEquipment} />
         </CCardBody>
       </CCard>
     </>

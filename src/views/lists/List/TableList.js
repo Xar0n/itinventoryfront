@@ -147,14 +147,6 @@ function TableList({ columns, data }) {
                 ))}
               </CDropdownMenu>
             </CDropdown>
-            <div className="float-end mx-1">
-              <Link
-                className="btn btn-outline-dark px-4 float-end btn-select"
-                to={'equipment/store'}
-              >
-                <CIcon icon={cilPlus} />
-              </Link>
-            </div>
           </CButtonGroup>
         </CCol>
       </CRow>

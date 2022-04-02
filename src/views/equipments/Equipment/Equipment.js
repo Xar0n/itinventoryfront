@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import { useHistory } from 'react-router-dom'
 import store, { resetFilters } from '../../../store'
 import { useDispatch } from 'react-redux'
+import { CheckBoxColumnFilter } from './FiltersEquipment'
 
 function isEmpty(value) {
   return typeof value === 'string' && value.trim() === ''
@@ -84,6 +85,21 @@ const Equipment = () => {
             accessor: 'barcode.code',
             disableFilters: true,
           },
+          {
+            Header: 'Использование',
+            id: 'used',
+            accessor: (d) => {
+              if (d.used) return '+'
+              return '_'
+            },
+            Filter: CheckBoxColumnFilter,
+            disableFilters: false,
+          },
+          {
+            Header: 'Причина списания',
+            accessor: 'reason_writeoff.name',
+            disableFilters: true,
+          },
         ],
       },
       {
@@ -122,17 +138,17 @@ const Equipment = () => {
           {
             Header: 'Вид',
             accessor: 'equipment.view.name',
-            disableFilters: true,
+            disableFilters: false,
           },
           {
             Header: 'Сорт',
             accessor: 'equipment.grade.name',
-            disableFilters: true,
+            disableFilters: false,
           },
           {
             Header: 'Группа',
             accessor: 'equipment.group.name',
-            disableFilters: true,
+            disableFilters: false,
           },
         ],
       },

@@ -47,6 +47,7 @@ function TableEquipment({ columns, data }) {
     }),
     [],
   )
+
   const dispath = useDispatch()
   const {
     getTableProps,
@@ -72,7 +73,7 @@ function TableEquipment({ columns, data }) {
       columns,
       data,
       defaultColumn,
-      initialState: { pageIndex: 0, pageSize: 25, hiddenColumns: ['equipment.view.name'] },
+      initialState: { pageIndex: 0, pageSize: 25, hiddenColumns: ['reason_writeoff.name', 'used'] },
     },
     useGlobalFilter,
     useFilters,
@@ -85,6 +86,10 @@ function TableEquipment({ columns, data }) {
   const objectOrganization = objectByHeader(allColumns, 'Организация')
   const objectAddress = objectByHeader(allColumns, 'Адрес')
   const objectStorage = objectByHeader(allColumns, 'Хранилище')
+  const objectView = objectByHeader(allColumns, 'Вид')
+  const objectGrade = objectByHeader(allColumns, 'Сорт')
+  const objectGroup = objectByHeader(allColumns, 'Группа')
+  const objectUsed = objectByHeader(allColumns, 'Использование')
   if (globalFilter) {
     dispath(setSearchFilter(globalFilter))
   }
@@ -116,6 +121,37 @@ function TableEquipment({ columns, data }) {
         </CCol>
         <CCol sm={4} className="d-none d-md-block">
           <CButtonGroup className="float-end">
+            <CDropdown className="float-end mx-1">
+              <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
+                Оборудование
+              </CDropdownToggle>
+              <CDropdownMenu className={'ul'}>
+                <CDropdownItemPlain>
+                  <div>Выберите вид:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectView.canFilter ? objectView.render('Filter') : null}
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  <div>Выберите сорт:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectGrade.canFilter ? objectGrade.render('Filter') : null}
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  <div>Выберите группу:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectGroup.canFilter ? objectGroup.render('Filter') : null}
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  <div>Показать списанное:</div>
+                </CDropdownItemPlain>
+                <CDropdownItemPlain>
+                  {objectUsed.canFilter ? objectUsed.render('Filter') : null}
+                </CDropdownItemPlain>
+              </CDropdownMenu>
+            </CDropdown>
             <CDropdown className="float-end mx-1">
               <CDropdownToggle variant={'outline'} color="dark" className={'btn-select'}>
                 Местоположение

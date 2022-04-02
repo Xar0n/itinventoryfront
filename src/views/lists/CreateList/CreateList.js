@@ -25,7 +25,7 @@ function addKeyValue(obj, key, data) {
 
 const CreateList = (props) => {
   registerLocale('ru', ru)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const history = useHistory()
   useEffect(() => {}, [])
   //const [createDate, setCreateDate] = useState(new Date())
@@ -101,7 +101,7 @@ const CreateList = (props) => {
     axios.post('api/lists', formData).then((res) => {
       if (res.data.status === 200) {
         Swal.fire('Создание ведомости', res.data.message, 'success')
-        history.push(`/lists/${res.data.list_id}`)
+        history.push(`/list/${res.data.list_id}`)
         setErrorList([])
       } else {
         Swal.fire('Создание ведомости', res.data.message, 'warning')
@@ -153,6 +153,7 @@ const CreateList = (props) => {
       if (res.data.status === 200) {
         setInventoryReasonList(res.data.inventory_reasons)
       }
+      setLoading(false)
     })
   }, [])
 

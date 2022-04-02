@@ -69,3 +69,35 @@ export function SelectColumnFilter({ column: { filterValue, setFilter, preFilter
     />
   )
 }
+
+// eslint-disable-next-line react/prop-types
+export function CheckBoxColumnFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
+  const options = React.useMemo(() => {
+    const options = new Set()
+    // eslint-disable-next-line react/prop-types
+    preFilteredRows.forEach((row, idx, array) => {
+      options.add({ value: row.values[id], label: row.values[id] })
+    })
+    return [...options.values()]
+  }, [id, preFilteredRows])
+  let filteredValues
+  filteredValues = arrUnique(options)
+  if (!filterValue) {
+    setFilter('+')
+  }
+  const value = filteredValues.find((e) => e.value === filterValue || undefined)
+  return (
+    <Select
+      isSearchable={false}
+      value={value}
+      onChange={(e) => {
+        if (e) {
+          setFilter(e.value || undefined)
+        } else {
+          setFilter(undefined)
+        }
+      }}
+      options={filteredValues}
+    />
+  )
+}

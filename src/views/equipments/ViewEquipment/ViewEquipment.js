@@ -28,16 +28,20 @@ const ViewEquipment = (props) => {
   const [loading, setLoading] = useState(true)
   const [errorList, setErrorList] = useState([])
   const history = useHistory()
+  const [reason, setReason] = useState(undefined)
   const writeOffEquipmentSubmit = (e) => {
     e.preventDefault()
     let data = {}
     const used = writeOffInput['used']
     const reasonWriteOff = writeOffSelect['reasonWriteOff']
     if (used) data['used'] = used
-    if (reasonWriteOff.action === 'create-option')
+    if (reasonWriteOff.action === 'create-option') {
       data['reason_writeoff_id_create'] = reasonWriteOff.value
-    else if (reasonWriteOff.action === 'select-option')
+      setReason(reasonWriteOff.value)
+    } else if (reasonWriteOff.action === 'select-option') {
       data['reason_writeoff_id'] = reasonWriteOff.value
+      setReason(reasonWriteOff.label)
+    }
     axios.patch(`api/equipments/write-off/${equipment.id}`, data).then((res) => {
       if (res.data.status === 200) {
         equipment.used = false
@@ -238,7 +242,9 @@ const ViewEquipment = (props) => {
               <CRow>
                 <h5 className="mb-3">Списание</h5>
                 <div className="col-sm-2">Причина:</div>
-                <div className="col-sm-10">{equipment?.reason_writeoff?.name}</div>
+                <div className="col-sm-10">
+                  {reason === undefined ? equipment?.reason_writeoff?.name : reason}
+                </div>
               </CRow>
             )}
           </CRow>
