@@ -15,6 +15,10 @@ import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import CreatableSelect from 'react-select/creatable'
 
+function showDate(date) {
+  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
+}
+
 const ViewEquipment = (props) => {
   const [writeOffInput, setWriteOffInput] = useState({
     used: false,
@@ -29,6 +33,8 @@ const ViewEquipment = (props) => {
   const [errorList, setErrorList] = useState([])
   const history = useHistory()
   const [reason, setReason] = useState(undefined)
+  let created_at = new Date(equipment.created_at)
+  let updated_at = new Date(equipment.updated_at)
   const writeOffEquipmentSubmit = (e) => {
     e.preventDefault()
     let data = {}
@@ -152,11 +158,16 @@ const ViewEquipment = (props) => {
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Дата добавления:</div>
-            <div className="col-sm-10">{equipment.created_at}</div>
+            <div className="col-sm-10">{showDate(created_at)}</div>
           </CRow>
+          <CRow className="mb-3">
+            <div className="col-sm-2">Дата обновления:</div>
+            <div className="col-sm-10">{showDate(updated_at)}</div>
+          </CRow>
+          {/*TODO доделать*/}
           <CRow className="mb-4">
             <div className="col-sm-2">Дата актуализации:</div>
-            <div className="col-sm-10">{equipment.updated_at}</div>
+            <div className="col-sm-10">{}</div>
           </CRow>
           <h5 className="mb-3">Местоположение</h5>
           <CRow className="mb-3">

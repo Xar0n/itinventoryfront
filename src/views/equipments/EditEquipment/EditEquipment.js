@@ -41,7 +41,7 @@ const EditEquipment = (props) => {
     e.preventDefault()
     let data = {}
     if (barcode) data['barcode'] = barcode
-    if (selectEmployee.value) data['employee_id'] = selectEmployee.value
+    if (selectEmployee?.value) data['employee_id'] = selectEmployee?.value
     if (location) data['location'] = location
     data['object_id'] = selectObject.value
     axios.patch(`api/equipments/${equipment.id}`, data).then((res) => {
@@ -65,30 +65,22 @@ const EditEquipment = (props) => {
     let isMounted = true
     // eslint-disable-next-line react/prop-types
     const equipment_id = props.match.params.id
-    axios.get(`/api/equipments/${equipment_id}`).then((response) => {
+    axios.get(`/api/equipments/edit/${equipment_id}`).then((response) => {
       if (isMounted) {
         if (response.data.status === 200) {
           const equipment_l = response.data.equipment
+          const objects = response.data.objects_same
           setEquipment(response.data.equipment)
           axios.get(`api/all-employee/${equipment_l.equipment.organization.id}`).then((res) => {
             if (res.data.status === 200) {
               let employee = res.data.employee
-              employee.map(function (o) {
-                return addKeyValue(o, 'label', o.full_name)
-              })
-              setSelectEmployee({
-                label: equipment_l.employee?.full_name,
-                value: equipment_l.employee?.id,
-              })
+              setSelectEmployee(equipment_l?.employee)
               setBarcode(equipment_l?.barcode?.code)
               setLocation(equipment_l?.location)
-              setObjectList(equipment_l.objects)
+              setObjectList(objects)
               setEmployeeList(employee)
               setLoading(false)
-              setSelectObject({
-                label: '№:' + equipment_l.equipment.id + ', ' + equipment_l.equipment.room.storage,
-                value: equipment_l.equipment.id,
-              })
+              setSelectObject(equipment_l?.equipment)
             }
           })
         } else if (response.data.status === 404) {

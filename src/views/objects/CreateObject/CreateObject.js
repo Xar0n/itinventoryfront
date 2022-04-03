@@ -101,7 +101,7 @@ const CreateObject = () => {
     formData.append('storage_id', objectInput.storage_id)
     formData.append('count', objectInput.count)
     axios.post('api/objects', formData).then((res) => {
-      if (res === 200) {
+      if (res.data.status === 200) {
         history.push('/object')
         Swal.fire('Создание объекта', res.data.message, 'success')
         setErrorList([])
