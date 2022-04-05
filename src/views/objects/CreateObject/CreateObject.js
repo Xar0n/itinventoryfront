@@ -15,14 +15,7 @@ import axios from 'axios'
 import CreatableSelect from 'react-select/creatable'
 import Swal from 'sweetalert2'
 import { Link, useHistory } from 'react-router-dom'
-
-function addKeyValue(obj, key, data) {
-  obj[key] = data
-}
-
-function isEmpty(value) {
-  return typeof value === 'string' && value.trim() === ''
-}
+import { addKeyValue, isEmpty, arrUnique } from '../../../components/Functions'
 
 const CreateObject = () => {
   const history = useHistory()
@@ -103,7 +96,13 @@ const CreateObject = () => {
     axios.post('api/objects', formData).then((res) => {
       if (res.data.status === 200) {
         history.push('/object')
-        Swal.fire('Создание объекта', res.data.message, 'success')
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: res.data.message,
+          showConfirmButton: false,
+          timer: 1500,
+        })
         setErrorList([])
       } else {
         Swal.fire('Создание объекта', res.data.message, 'warning')
@@ -146,6 +145,7 @@ const CreateObject = () => {
     axios.get('api/all-address').then((res) => {
       if (res.data.status === 200) {
         setAddressList(res.data.addresses)
+        arrUnique(addressList)
       }
     })
     axios.get('api/all-storage').then((res) => {
@@ -159,6 +159,12 @@ const CreateObject = () => {
       }
     })
   }, [])
+  let filteredAddressList = addressList.filter((o) => {
+    let links = o.links
+    for (let i = 0; i < links.length; i++) {
+      return links[i] === objectInput.organization_id
+    }
+  })
   let filteredStorageList = storageList.filter((o) => o.link === objectInput.address_id)
 
   if (loading) {
@@ -287,7 +293,7 @@ const CreateObject = () => {
                   isClearable
                   placeholder="Выберите адрес"
                   onChange={handleSelect}
-                  options={addressList}
+                  options={filteredAddressList}
                 />
               </div>
             </CRow>

@@ -7,10 +7,7 @@ import { useHistory } from 'react-router-dom'
 import store, { resetFilters } from '../../../store'
 import { useDispatch } from 'react-redux'
 import { CheckBoxColumnFilter } from './FiltersEquipment'
-
-function isEmpty(value) {
-  return typeof value === 'string' && value.trim() === ''
-}
+import { isEmpty } from '../../../components/Functions'
 
 const Equipment = () => {
   const dispath = useDispatch()

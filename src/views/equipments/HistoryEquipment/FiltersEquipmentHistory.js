@@ -1,8 +1,20 @@
 import React, { useState } from 'react'
 import Select from 'react-select'
+import _, { isNull } from 'underscore'
 import { useAsyncDebounce } from 'react-table'
 import { CFormInput } from '@coreui/react'
-import { arrUnique } from '../../../components/Functions'
+
+function arrUnique(arr) {
+  var cleaned = []
+  arr.forEach(function (itm) {
+    var unique = true
+    cleaned.forEach(function (itm2) {
+      if (_.isEqual(itm, itm2)) unique = false
+    })
+    if (unique) cleaned.push(itm)
+  })
+  return cleaned
+}
 
 // eslint-disable-next-line react/prop-types
 export function GlobalFilter({ preGlobalFilteredRows, filter, setFilter }) {

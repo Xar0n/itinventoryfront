@@ -120,7 +120,7 @@ const ViewEquipment = (props) => {
           <CRow>
             <CCol sm={12}>
               <h4 id="equipment-header" className="card-title mb-5">
-                Просмотр оборудования {equipment.equipment?.config_item.name}
+                Просмотр оборудования: {equipment.equipment?.config_item.name}
               </h4>
             </CCol>
             {!Boolean(equipment.used) && (

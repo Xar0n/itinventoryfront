@@ -13,11 +13,6 @@ import Select from 'react-select'
 import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
-
-function addKeyValue(obj, key, data) {
-  obj[key] = data
-}
-
 const EditEquipment = (props) => {
   const [equipment, setEquipment] = useState([])
   const [loading, setLoading] = useState(true)
