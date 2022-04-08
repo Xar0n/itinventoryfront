@@ -1,4 +1,5 @@
 import _ from 'underscore'
+import Swal from 'sweetalert2'
 
 export function addKeyValue(obj, key, data) {
   obj[key] = data
@@ -20,9 +21,24 @@ export function arrUnique(arr) {
   return cleaned
 }
 
-function objectByHeader(array, header) {
+export function objectByHeader(array, header) {
   let index = array.findIndex(function (item, i) {
     return item.Header === header
   })
   return array[index]
+}
+
+export function htmlDecode(input) {
+  var doc = new DOMParser().parseFromString(input, 'text/html')
+  return doc.documentElement.textContent
+}
+
+export function successMessageUserWithoutAccept(message) {
+  Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: message,
+    showConfirmButton: false,
+    timer: 1500,
+  })
 }

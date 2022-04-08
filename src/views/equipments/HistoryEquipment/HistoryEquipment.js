@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/react'
 import axios from 'axios'
 import TableEquipmentHistory from './TableEquipmentHistory'
+import { Link } from 'react-router-dom'
 
 const HistoryEquipment = (props) => {
   const [historyList, setHistoryList] = useState([])
@@ -29,7 +30,10 @@ const HistoryEquipment = (props) => {
       },
       {
         Header: 'Дата и время',
-        accessor: 'date',
+        accessor: (d) => {
+          let dat = new Date(d.date)
+          return dat.toLocaleDateString() + ' ' + dat.toLocaleTimeString()
+        },
         disableFilters: true,
       },
       {
@@ -68,6 +72,15 @@ const HistoryEquipment = (props) => {
             </CCol>
           </CRow>
           <TableEquipmentHistory columns={columns} data={historyList} />
+          <CRow className="mb-3">
+            <CCol sm={12} className="d-none d-md-block">
+              <CButtonGroup className="float-start">
+                <Link to={`/equipment/${equipment.id}`} className="btn btn-outline-dark btn-select">
+                  Назад
+                </Link>
+              </CButtonGroup>
+            </CCol>
+          </CRow>
         </CCardBody>
       </CCard>
     </>

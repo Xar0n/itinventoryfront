@@ -18,10 +18,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import ru from 'date-fns/locale/ru'
 import CreatableSelect from 'react-select/creatable'
 import store from '../../../store'
-
-function addKeyValue(obj, key, data) {
-  obj[key] = data
-}
+import { addKeyValue, successMessageUserWithoutAccept } from '../../../components/Functions'
 
 const CreateList = (props) => {
   registerLocale('ru', ru)
@@ -100,9 +97,9 @@ const CreateList = (props) => {
     })
     axios.post('api/lists', formData).then((res) => {
       if (res.data.status === 200) {
-        Swal.fire('Создание ведомости', res.data.message, 'success')
         history.push(`/list/${res.data.list_id}`)
         setErrorList([])
+        successMessageUserWithoutAccept(res.data.message)
       } else {
         Swal.fire('Создание ведомости', res.data.message, 'warning')
         setErrorList(res.data.errors)
@@ -125,14 +122,17 @@ const CreateList = (props) => {
             let storage = res.data.storage
             storage['label'] = storage['storage']
             setSelectStorage(storage)
+            setLoading(false)
           }
         })
       }
     })
     axios.get(`api/one-organization/${organization}`).then((res) => {
+      console.log(res.data)
       if (res.data.status === 200) {
         setSelectOrganization(res.data.organization)
         const org = res.data.organization
+        console.log(org)
         axios.get(`api/all-employee/${org.value}`).then((res) => {
           if (res.data.status === 200) {
             let mol = res.data.employee
@@ -153,7 +153,6 @@ const CreateList = (props) => {
       if (res.data.status === 200) {
         setInventoryReasonList(res.data.inventory_reasons)
       }
-      setLoading(false)
     })
   }, [])
 

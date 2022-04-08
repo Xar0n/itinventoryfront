@@ -17,6 +17,7 @@ import {
 import { useHistory } from 'react-router-dom'
 import React from 'react'
 import { GlobalFilter, SelectColumnFilter } from './FiltersEquipmentHistory'
+import { htmlDecode } from '../../../components/Functions'
 
 // eslint-disable-next-line react/prop-types
 function TableEquipmentHistory({ columns, data }) {

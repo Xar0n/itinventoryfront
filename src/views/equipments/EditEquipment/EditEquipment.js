@@ -13,6 +13,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import { successMessageUserWithoutAccept } from '../../../components/Functions'
 const EditEquipment = (props) => {
   const [equipment, setEquipment] = useState([])
   const [loading, setLoading] = useState(true)
@@ -43,13 +44,7 @@ const EditEquipment = (props) => {
       if (res.data.status === 200) {
         setErrorList([])
         history.push(`/equipment/${equipment.id}`)
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: res.data.message,
-          showConfirmButton: false,
-          timer: 1500,
-        })
+        successMessageUserWithoutAccept(res.data.message)
       } else {
         setErrorList(res.data.errors)
       }
