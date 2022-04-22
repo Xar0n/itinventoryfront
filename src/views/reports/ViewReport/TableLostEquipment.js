@@ -10,7 +10,7 @@ import {
 import React from 'react'
 
 // eslint-disable-next-line react/prop-types
-function TableFoundEquipment({ columns, data }) {
+function TableLostEquipment({ columns, data }) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, footerGroups } =
     useTable({
       columns,
@@ -51,21 +51,21 @@ function TableFoundEquipment({ columns, data }) {
               </>
             )
           })}
-          {footerGroups.map((group) => (
+          {/*footerGroups.map((group) => (
             // eslint-disable-next-line react/jsx-key
             <CTableRow {...group.getFooterGroupProps()}>
               {group.headers.map((column) => (
                 // eslint-disable-next-line react/jsx-key
                 <CTableDataCell {...column.getFooterProps()}>
-                  {column.render('Footer') === '' ? column.render('Footer') : ''}
+                  {column.render('Footer') === '' ? column.render('Footer') : 'ничего'}
                 </CTableDataCell>
               ))}
             </CTableRow>
-          ))}
+          ))*/}
         </CTableBody>
       </CTable>
     </>
   )
 }
 
-export default TableFoundEquipment
+export default TableLostEquipment

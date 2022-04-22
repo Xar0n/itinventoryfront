@@ -27,7 +27,7 @@ const AppContent = () => {
               )
             )
           })}
-          <Redirect to="/dashboard" />
+          <Redirect to="/equipment" />
         </Switch>
       </Suspense>
     </CContainer>

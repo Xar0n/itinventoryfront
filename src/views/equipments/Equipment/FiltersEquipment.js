@@ -78,6 +78,7 @@ export function CheckBoxColumnFilter({ column: { filterValue, setFilter, preFilt
     <Select
       isSearchable={false}
       value={value}
+      placeholder={''}
       onChange={(e) => {
         if (e) {
           setFilter(e.value || undefined)

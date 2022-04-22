@@ -13,7 +13,11 @@ import Select from 'react-select'
 import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import { successMessageUserWithoutAccept } from '../../../components/Functions'
+import {
+  addKeyValue,
+  arrUnique,
+  successMessageUserWithoutAccept,
+} from '../../../components/Functions'
 const EditEquipment = (props) => {
   const [equipment, setEquipment] = useState([])
   const [loading, setLoading] = useState(true)
@@ -21,9 +25,15 @@ const EditEquipment = (props) => {
   const [location, setLocation] = useState()
   const [selectEmployee, setSelectEmployee] = useState()
   const [selectObject, setSelectObject] = useState()
+  const [selectOrganization, setSelectOrganization] = useState()
+  const [selectAddress, setSelectAddress] = useState()
+  const [selectStorage, setSelectStorage] = useState()
   const [employeeList, setEmployeeList] = useState([])
   const [errorList, setErrorList] = useState([])
   const [objectList, setObjectList] = useState([])
+  const [organizationList, setOrganizationList] = useState([])
+  const [addressList, setAddressList] = useState([])
+  const [storageList, setStorageList] = useState([])
   const history = useHistory()
 
   const barcodeGenerateClick = (e) => {
@@ -53,6 +63,26 @@ const EditEquipment = (props) => {
 
   useEffect(() => {
     let isMounted = true
+    axios.get('api/all-organization').then((res) => {
+      if (res.data.status === 200) {
+        setOrganizationList(res.data.organizations)
+      }
+    })
+    axios.get('api/all-address').then((res) => {
+      if (res.data.status === 200) {
+        setAddressList(res.data.addresses)
+        arrUnique(addressList)
+      }
+    })
+    axios.get('api/all-storage').then((res) => {
+      if (res.data.status === 200) {
+        let storages = res.data.rooms
+        storages.map(function (storage) {
+          return addKeyValue(storage, 'label', storage.storage)
+        })
+        setStorageList(storages)
+      }
+    })
     // eslint-disable-next-line react/prop-types
     const equipment_id = props.match.params.id
     axios.get(`/api/equipments/edit/${equipment_id}`).then((response) => {
@@ -65,6 +95,7 @@ const EditEquipment = (props) => {
             if (res.data.status === 200) {
               let employee = res.data.employee
               setSelectEmployee(equipment_l?.employee)
+              setSelectOrganization(equipment_l?.organization)
               setBarcode(equipment_l?.barcode?.code)
               setLocation(equipment_l?.location)
               setObjectList(objects)
@@ -93,6 +124,13 @@ const EditEquipment = (props) => {
     )
   }
 
+  let filteredAddressList = addressList.filter((o) => {
+    let links = o.links
+    for (let i = 0; i < links.length; i++) {
+      return links[i] === selectOrganization.value
+    }
+  })
+  let filteredStorageList = storageList.filter((o) => o.link === selectAddress.value)
   return (
     <>
       <CCard className="mb-5">
@@ -100,7 +138,7 @@ const EditEquipment = (props) => {
           <CRow>
             <CCol sm={12}>
               <h4 id="equipment-header" className="card-title mb-5">
-                Редактирование оборудования {equipment.equipment.config_item.name}
+                Редактирование оборудования {equipment?.equipment?.config_item.name}
               </h4>
             </CCol>
           </CRow>
@@ -255,51 +293,58 @@ const EditEquipment = (props) => {
           </CRow>
           <h5 className="mb-3">Местоположение</h5>
           <CRow className="mb-3">
-            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+            <CFormLabel htmlFor={'selectOrganization'} className="col-sm-2 col-form-label">
               Организация:
+              <span className={'main-color'}>*</span>
             </CFormLabel>
-            <div className="col-sm-8">
+            <div className="col-sm-10">
               <Select
                 name="organization_id"
                 id="selectOrganization"
                 isClearable
-                value={{
-                  label: equipment.equipment.organization.name,
+                placeholder="Выберите организацию"
+                value={selectOrganization}
+                onChange={(e) => {
+                  setSelectOrganization(e)
                 }}
-                isDisabled={true}
+                options={organizationList}
               />
+              {errorList?.organization_id?.map(function (error) {
+                return <li key={error}>{error}</li>
+              })}
             </div>
           </CRow>
           <CRow className="mb-3">
-            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+            <CFormLabel htmlFor={'selectAddress'} className="col-sm-2 col-form-label">
               Адрес:
+              <span className={'main-color'}>*</span>
             </CFormLabel>
-            <div className="col-sm-8">
+            <div className="col-sm-10">
               <Select
                 name="address_id"
                 id="selectAddress"
                 isClearable
-                value={{
-                  label: equipment.equipment.room.address.name,
-                }}
-                isDisabled={true}
+                placeholder="Выберите адрес"
+                options={filteredAddressList}
               />
             </div>
           </CRow>
           <CRow className="mb-3">
             <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
-              Склад/кабинет:
+              Склад / кабинет:
+              <span className={'main-color'}>*</span>
             </CFormLabel>
-            <div className="col-sm-8">
+            <div className="col-sm-10">
               <Select
                 name="storage_id"
                 id="selectStorage"
                 isClearable
-                value={{
-                  label: equipment.equipment.room.storage,
-                }}
-                isDisabled={true}
+                placeholder="Выберите склад/кабинет"
+                options={filteredStorageList}
               />
+              {errorList?.storage_id?.map(function (error) {
+                return <li key={error}>{error}</li>
+              })}
             </div>
           </CRow>
           <CRow className="mb-5">

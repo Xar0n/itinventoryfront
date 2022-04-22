@@ -6,6 +6,7 @@ const SET_EMPLOYEE = 'set_employee'
 const SET_ORGANIZATION = 'set_organization'
 const SET_ADDRESS = 'set_address'
 const SET_STORAGE = 'set_storage'
+const SET_USER = 'set_user'
 const SET_RESULT_INVENTORY = 'set_result_inventory'
 const RESET_FILTERS = 'reset_filters'
 
@@ -17,6 +18,7 @@ const initialState = {
   organization: '',
   address: '',
   storage: '',
+  user: '',
   result_inventory: [],
 }
 
@@ -64,7 +66,15 @@ export function setStorageFilter(data) {
   return {
     type: SET_STORAGE,
     payload: data,
-    info: 'Задать значение фильтра склада/кабинеиа',
+    info: 'Задать значение фильтра склада/кабинета',
+  }
+}
+
+export function setUser(data) {
+  return {
+    type: SET_USER,
+    payload: data,
+    info: 'Установить текущего пользователя',
   }
 }
 
@@ -72,12 +82,14 @@ export function changeState(data) {
   return {
     type: SET,
     payload: data,
+    info: 'Установить состояние боковой панели',
   }
 }
 
 export function resetFilters() {
   return {
     type: RESET_FILTERS,
+    info: 'Обнулить значения всех фильтров',
   }
 }
 
@@ -97,6 +109,8 @@ const changeStateReducer = (state = initialState, action) => {
       return { ...state, storage: action.payload }
     case SET_RESULT_INVENTORY:
       return { ...state, result_inventory: action.payload }
+    case SET_USER:
+      return { ...state, user: action.payload }
     case RESET_FILTERS:
       return { ...state, search: '', organization: '', employee: '', address: '', storage: '' }
     default:

@@ -12,8 +12,8 @@ const DefaultLayout = () => {
     axios.get('api/checkingAuthenticated').then((res) => {
       if (res.status === 200) {
         setAuthenticated(true)
+        setLoading(false)
       }
-      setLoading(false)
     })
     return () => {
       setAuthenticated(false)

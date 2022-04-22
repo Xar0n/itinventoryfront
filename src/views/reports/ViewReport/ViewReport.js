@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import { Link, useHistory } from 'react-router-dom'
 import TableFindEquipment from './TableFindEquipment'
 import store from '../../../store'
+import TableLostEquipment from './TableLostEquipment'
 
 const ViewReport = (props) => {
   const history = useHistory()
@@ -80,7 +81,7 @@ const ViewReport = (props) => {
       {
         Header: 'Фактическое количество',
         accessor: (d) => {
-          return 5
+          return 1
         },
         Footer: (info) => {
           const total = React.useMemo(() => info.rows.reduce((sum, row) => 1 + sum, 0), [info.rows])
@@ -91,7 +92,7 @@ const ViewReport = (props) => {
       {
         Header: 'Количество по данным учета',
         accessor: (d) => {
-          return 5
+          return 1
         },
       },
     ],
@@ -203,6 +204,11 @@ const ViewReport = (props) => {
             </CCol>
           </CRow>
           <TableFoundEquipment columns={columnsFound} data={foundEquipment} />
+          <CRow className={'mb-3'}>
+            <CCol sm={5}>
+              <h5 className="mb-3">Отсутствующее оборудование</h5>
+            </CCol>
+          </CRow>
           <CRow className={'mb-3'}>
             <CCol sm={5}>
               <h5 className="mb-3">Излишки оборудования</h5>

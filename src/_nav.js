@@ -7,17 +7,10 @@ import {
   cilInbox,
   cilLaptop,
   cilPrint,
-  cilSpeedometer,
 } from '@coreui/icons'
-import { CNavGroup, CNavItem } from '@coreui/react'
+import { CNavItem } from '@coreui/react'
 
 const _nav = [
-  {
-    component: CNavItem,
-    name: 'Главная',
-    to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-  },
   {
     component: CNavItem,
     name: 'Оборудование',

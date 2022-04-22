@@ -37,13 +37,13 @@ const Equipment = () => {
     const e_org = isEmpty(state.organization)
     const e_adr = isEmpty(state.address)
     const e_storage = isEmpty(state.storage)
-    if (e_org) errors.push('Выберите организацию в фильтре "Использование"')
-    if (e_adr) errors.push('Выберите адрес в фильтре "Местоположение"')
-    if (e_storage) errors.push('Выберите склад/кабинет в фильтре "Местоположение"')
+    if (e_org) errors.push(' организацию в фильтре "Использование"')
+    if (e_adr) errors.push(' адрес в фильтре "Местоположение"')
+    if (e_storage) errors.push(' склад/кабинет в фильтре "Местоположение"')
     if (!e_org && !e_adr && !e_storage) {
       history.push('/list/create')
     } else {
-      Swal.fire('Инвентаризация', errors.toString(), 'error')
+      Swal.fire('Инвентаризация', 'Выберите ' + errors.toString(), 'error')
     }
   }
   const [loading, setLoading] = useState(true)

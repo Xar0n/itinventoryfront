@@ -145,7 +145,7 @@ function TableEquipment({ columns, data }) {
                   {objectGroup.canFilter ? objectGroup.render('Filter') : null}
                 </CDropdownItemPlain>
                 <CDropdownItemPlain>
-                  <div>Показать списанное:</div>
+                  <div>Показать используемое:</div>
                 </CDropdownItemPlain>
                 <CDropdownItemPlain>
                   {objectUsed.canFilter ? objectUsed.render('Filter') : null}

@@ -5,8 +5,8 @@ const AppFooter = () => {
   return (
     <CFooter>
       <div className="ms-auto">
-        <a href="https://coreui.io/react" target="_blank" rel="noopener noreferrer">
-          T0NI
+        <a href="https://github.com/Xar0n" target="_blank" rel="noopener noreferrer">
+          Xar0n
         </a>
         <span className="me-1"> &copy; 2022</span>
       </div>
