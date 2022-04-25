@@ -39,7 +39,9 @@ export function SelectColumnFilter({ column: { filterValue, setFilter, preFilter
     return [...options.values()]
   }, [id, preFilteredRows])
   let filteredValues
-  filteredValues = arrUnique(options)
+  filteredValues = arrUnique(options).filter(function (el) {
+    return el.value !== undefined
+  })
   const value = filteredValues.find((e) => e.value === filterValue || undefined)
   return (
     <Select

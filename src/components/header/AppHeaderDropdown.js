@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   CAvatar,
   CDropdown,
@@ -17,9 +17,14 @@ import avatar8 from './../../assets/images/avatars/8.jpg'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
+import store from '../../store'
+import { isEmpty } from '../Functions'
 
 const AppHeaderDropdown = () => {
   const history = useHistory()
+  const state = store.getState()
+  let user_name = ''
+  if (state.user) user_name = state.user.full_name
   const logoutSubmit = (e) => {
     e.preventDefault()
     axios.post('/api/logout').then((res) => {
@@ -40,9 +45,7 @@ const AppHeaderDropdown = () => {
         </div>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-light fw-semibold py-2">
-          admin - Нецветаев А.А.
-        </CDropdownHeader>
+        <CDropdownHeader className="bg-light fw-semibold py-2">{user_name}</CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilUser} className="me-2" />
           Профиль

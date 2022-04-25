@@ -3,6 +3,7 @@ import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/rea
 import axios from 'axios'
 import TableEquipmentHistory from './TableEquipmentHistory'
 import { Link } from 'react-router-dom'
+import parse from 'html-react-parser'
 
 const HistoryEquipment = (props) => {
   const [historyList, setHistoryList] = useState([])
@@ -25,7 +26,14 @@ const HistoryEquipment = (props) => {
     () => [
       {
         Header: 'Действие',
-        accessor: 'action',
+        accessor: (d) => {
+          let action = d.action
+          return (
+            <div>
+              <span>{parse(action)}</span>
+            </div>
+          )
+        },
         disableFilters: true,
       },
       {

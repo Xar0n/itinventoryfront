@@ -9,6 +9,7 @@ import {
   CCol,
   CContainer,
   CForm,
+  CFormCheck,
   CFormInput,
   CInputGroup,
   CInputGroupText,
@@ -82,7 +83,7 @@ const Login = () => {
                         value={loginInput.name}
                       />
                     </CInputGroup>
-                    <CInputGroup className="mb-4">
+                    <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
@@ -93,6 +94,12 @@ const Login = () => {
                         onChange={handleInput}
                         value={loginInput.password}
                       />
+                    </CInputGroup>
+                    <CInputGroup className="mb-4 justify-content-center">
+                      <div className="col-sm-auto">
+                        <CFormCheck onChange={handleInput} id="flexCheckDefault" name="used" />
+                      </div>
+                      <div className="col-sm-auto mx-1">Запомнить меня</div>
                     </CInputGroup>
                     <CRow className="justify-content-center">
                       <CCol xs={2}>

@@ -186,7 +186,7 @@ const Equipment = () => {
                   color="dark"
                   className="mx-1 btn-select"
                 >
-                  Учетные данные
+                  Экспортировать
                 </CButton>
                 <CButton variant={'outline'} color="dark" className="mx-1 btn-select">
                   Импортировать

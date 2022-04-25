@@ -45,9 +45,15 @@ const EditEquipment = (props) => {
 
   const updateEquipmentSubmit = (e) => {
     e.preventDefault()
-    let data = {}
+    let data = {
+      employee_id: null,
+      location: null,
+      barcode: null,
+    }
     if (barcode) data['barcode'] = barcode
     if (selectEmployee?.value) data['employee_id'] = selectEmployee?.value
+    if (selectOrganization?.value) data['organization_id'] = selectOrganization?.value
+    if (selectStorage?.value) data['storage_id'] = selectStorage?.value
     if (location) data['location'] = location
     data['object_id'] = selectObject.value
     axios.patch(`api/equipments/${equipment.id}`, data).then((res) => {
@@ -96,6 +102,8 @@ const EditEquipment = (props) => {
               let employee = res.data.employee
               setSelectEmployee(equipment_l?.employee)
               setSelectOrganization(equipment_l?.organization)
+              setSelectStorage(equipment_l?.room)
+              setSelectAddress(equipment_l?.room.address)
               setBarcode(equipment_l?.barcode?.code)
               setLocation(equipment_l?.location)
               setObjectList(objects)
@@ -123,7 +131,6 @@ const EditEquipment = (props) => {
       </div>
     )
   }
-
   let filteredAddressList = addressList.filter((o) => {
     let links = o.links
     for (let i = 0; i < links.length; i++) {
@@ -143,7 +150,7 @@ const EditEquipment = (props) => {
             </CCol>
           </CRow>
           <h5 className="mb-3">Основная информация</h5>
-          <CRow className="mb-3">
+          {/*<CRow className="mb-3">
             <CFormLabel htmlFor={'selectObject'} className="col-sm-2 col-form-label">
               Объект:
             </CFormLabel>
@@ -156,7 +163,7 @@ const EditEquipment = (props) => {
                 options={objectList}
               />
             </div>
-          </CRow>
+          </CRow>*/}
           <CRow className="mb-3">
             <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
               Инвентарный номер:
@@ -180,7 +187,7 @@ const EditEquipment = (props) => {
             <div className="col-sm-8">
               <CFormInput
                 type={'text'}
-                id={'inputCount'}
+                id={'inputBarcode'}
                 placeholder="Введите или сформируйте штрих-код "
                 aria-label="Количество"
                 aria-describedby="count"
@@ -297,11 +304,10 @@ const EditEquipment = (props) => {
               Организация:
               <span className={'main-color'}>*</span>
             </CFormLabel>
-            <div className="col-sm-10">
+            <div className="col-sm-8">
               <Select
                 name="organization_id"
                 id="selectOrganization"
-                isClearable
                 placeholder="Выберите организацию"
                 value={selectOrganization}
                 onChange={(e) => {
@@ -319,12 +325,15 @@ const EditEquipment = (props) => {
               Адрес:
               <span className={'main-color'}>*</span>
             </CFormLabel>
-            <div className="col-sm-10">
+            <div className="col-sm-8">
               <Select
                 name="address_id"
                 id="selectAddress"
-                isClearable
                 placeholder="Выберите адрес"
+                value={selectAddress}
+                onChange={(e) => {
+                  setSelectAddress(e)
+                }}
                 options={filteredAddressList}
               />
             </div>
@@ -334,13 +343,16 @@ const EditEquipment = (props) => {
               Склад / кабинет:
               <span className={'main-color'}>*</span>
             </CFormLabel>
-            <div className="col-sm-10">
+            <div className="col-sm-8">
               <Select
                 name="storage_id"
                 id="selectStorage"
-                isClearable
+                value={selectStorage}
                 placeholder="Выберите склад/кабинет"
                 options={filteredStorageList}
+                onChange={(e) => {
+                  setSelectStorage(e)
+                }}
               />
               {errorList?.storage_id?.map(function (error) {
                 return <li key={error}>{error}</li>
@@ -348,7 +360,7 @@ const EditEquipment = (props) => {
             </div>
           </CRow>
           <CRow className="mb-5">
-            <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
+            <CFormLabel htmlFor={'inputLocation'} className="col-sm-2 col-form-label">
               Доп.инф.:
             </CFormLabel>
             <div className="col-sm-8">

@@ -133,13 +133,9 @@ const CreateList = (props) => {
         setSelectOrganization(res.data.organization)
         const org = res.data.organization
         console.log(org)
-        axios.get(`api/all-employee/${org.value}`).then((res) => {
+        axios.get(`api/all-mols/${org.value}`).then((res) => {
           if (res.data.status === 200) {
-            let mol = res.data.employee
-            mol.map(function (o) {
-              return addKeyValue(o, 'label', o.full_name)
-            })
-            setMolList(mol)
+            setMolList(res.data.mols)
           }
         })
         axios.get(`api/inventory-user/${org.value}`).then((res) => {
@@ -209,7 +205,7 @@ const CreateList = (props) => {
               </div>
             </CRow>*/}
             <CRow className="mb-3">
-              <div className="col-sm-2">
+              <div className="col-sm-2 col-form-label">
                 МОЛ:<span className={'main-color'}>*</span>
               </div>
               <div className="col-sm-8">
@@ -228,7 +224,7 @@ const CreateList = (props) => {
               </div>
             </CRow>
             <CRow className="mb-3">
-              <div className="col-sm-2">Комиссия:</div>
+              <div className="col-sm-2 col-form-label">Комиссия:</div>
               <div className="col-sm-8">
                 <Select
                   isMulti
@@ -245,7 +241,7 @@ const CreateList = (props) => {
               </div>
             </CRow>
             <CRow className="mb-3">
-              <div className="col-sm-2">Период с:</div>
+              <div className="col-sm-2 col-form-label">Период с:</div>
               <div className="col-sm-auto">
                 <DatePicker
                   selected={startDate}
@@ -259,7 +255,7 @@ const CreateList = (props) => {
                   locale="ru"
                 />
               </div>
-              <div className="col-sm-auto">по:</div>
+              <div className="col-sm-auto col-form-label">по:</div>
               <div className="col-sm-auto">
                 <DatePicker
                   selected={endDate}
@@ -276,7 +272,7 @@ const CreateList = (props) => {
               </div>
             </CRow>
             <CRow className="mb-3">
-              <div className="col-sm-2">
+              <div className="col-sm-2 col-form-label">
                 Основание:<span className={'main-color'}>*</span>
               </div>
               <div className="col-sm-2">
@@ -298,7 +294,7 @@ const CreateList = (props) => {
                   return <li key={error}>{error}</li>
                 })}
               </div>
-              <div className="col-sm-auto">
+              <div className="col-sm-auto col-form-label">
                 №:<span className={'main-color'}>*</span>
               </div>
               <div className="col-sm-auto">
@@ -313,7 +309,7 @@ const CreateList = (props) => {
                   onChange={handleInput}
                 />
               </div>
-              <div className="col-sm-auto">
+              <div className="col-sm-auto col-form-label">
                 от:<span className={'main-color'}>*</span>
               </div>
               <div className="col-sm-auto">
@@ -328,7 +324,7 @@ const CreateList = (props) => {
               </div>
             </CRow>
             <CRow className="mb-3">
-              <div className="col-sm-2">
+              <div className="col-sm-2 col-form-label">
                 Организация:<span className={'main-color'}>*</span>
               </div>
               <div className="col-sm-8">
@@ -343,7 +339,7 @@ const CreateList = (props) => {
               </div>
             </CRow>
             <CRow className="mb-3">
-              <div className="col-sm-2">
+              <div className="col-sm-2 col-form-label">
                 Адрес:<span className={'main-color'}>*</span>
               </div>
               <div className="col-sm-8">
@@ -358,7 +354,7 @@ const CreateList = (props) => {
               </div>
             </CRow>
             <CRow className="mb-3">
-              <div className="col-sm-2">
+              <div className="col-sm-2 col-form-label">
                 Склад/кабинет:<span className={'main-color'}>*</span>
               </div>
               <div className="col-sm-8">
@@ -373,7 +369,7 @@ const CreateList = (props) => {
               </div>
             </CRow>
             <CRow className="mb-5">
-              <div className="col-sm-2">
+              <div className="col-sm-2 col-form-label">
                 Причина:<span className={'main-color'}>*</span>
               </div>
               <div className="col-sm-8">

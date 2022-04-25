@@ -14,10 +14,7 @@ import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import CreatableSelect from 'react-select/creatable'
-
-function showDate(date) {
-  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
-}
+import { showDate } from '../../../components/Functions'
 
 const ViewEquipment = (props) => {
   const [writeOffInput, setWriteOffInput] = useState({
@@ -33,8 +30,6 @@ const ViewEquipment = (props) => {
   const [errorList, setErrorList] = useState([])
   const history = useHistory()
   const [reason, setReason] = useState(undefined)
-  let created_at = new Date(equipment.created_at)
-  let updated_at = new Date(equipment.updated_at)
   const writeOffEquipmentSubmit = (e) => {
     e.preventDefault()
     let data = {}
@@ -158,29 +153,28 @@ const ViewEquipment = (props) => {
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Дата добавления:</div>
-            <div className="col-sm-10">{showDate(created_at)}</div>
+            <div className="col-sm-10">{showDate(equipment.created_at)}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Дата обновления:</div>
-            <div className="col-sm-10">{showDate(updated_at)}</div>
+            <div className="col-sm-10">{showDate(equipment.updated_at)}</div>
           </CRow>
-          {/*TODO доделать*/}
           <CRow className="mb-4">
             <div className="col-sm-2">Дата актуализации:</div>
-            <div className="col-sm-10">{}</div>
+            <div className="col-sm-10">{showDate(equipment.inventory_date)}</div>
           </CRow>
           <h5 className="mb-3">Местоположение</h5>
           <CRow className="mb-3">
             <div className="col-sm-2">Организация:</div>
-            <div className="col-sm-10">{equipment.equipment?.organization.name}</div>
+            <div className="col-sm-10">{equipment?.organization.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Адрес:</div>
-            <div className="col-sm-10">{equipment.equipment?.room.address.name}</div>
+            <div className="col-sm-10">{equipment.room.address.name}</div>
           </CRow>
           <CRow className="mb-3">
             <div className="col-sm-2">Склад/кабинет:</div>
-            <div className="col-sm-10">{equipment.equipment?.room.storage}</div>
+            <div className="col-sm-10">{equipment.room.storage}</div>
           </CRow>
           <CRow className="mb-4">
             <div className="col-sm-2">Доп.инф.:</div>

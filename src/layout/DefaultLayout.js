@@ -3,8 +3,11 @@ import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/inde
 import { Redirect, useHistory } from 'react-router-dom'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { setUser } from '../store'
+import { useDispatch } from 'react-redux'
 
 const DefaultLayout = () => {
+  const dispath = useDispatch()
   const history = useHistory()
   const [Authenticated, setAuthenticated] = useState(false)
   const [Loading, setLoading] = useState(true)
@@ -13,6 +16,9 @@ const DefaultLayout = () => {
       if (res.status === 200) {
         setAuthenticated(true)
         setLoading(false)
+        dispath(setUser(res.data.user))
+      } else {
+        history.push('/login')
       }
     })
     return () => {

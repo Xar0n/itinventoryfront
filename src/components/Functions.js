@@ -42,3 +42,8 @@ export function successMessageUserWithoutAccept(message) {
     timer: 1500,
   })
 }
+
+export function showDate(date) {
+  let dateO = new Date(date)
+  return dateO.toLocaleDateString() + ' ' + dateO.toLocaleTimeString()
+}

@@ -3,18 +3,7 @@ import Select from 'react-select'
 import _, { isNull } from 'underscore'
 import { useAsyncDebounce } from 'react-table'
 import { CFormInput } from '@coreui/react'
-
-function arrUnique(arr) {
-  var cleaned = []
-  arr.forEach(function (itm) {
-    var unique = true
-    cleaned.forEach(function (itm2) {
-      if (_.isEqual(itm, itm2)) unique = false
-    })
-    if (unique) cleaned.push(itm)
-  })
-  return cleaned
-}
+import { arrUnique } from '../../../components/Functions'
 
 // eslint-disable-next-line react/prop-types
 export function GlobalFilter({ preGlobalFilteredRows, filter, setFilter }) {
@@ -51,7 +40,9 @@ export function SelectColumnFilter({ column: { filterValue, setFilter, preFilter
     return [...options.values()]
   }, [id, preFilteredRows])
   let filteredValues
-  filteredValues = arrUnique(options)
+  filteredValues = arrUnique(options).filter(function (el) {
+    return el.value !== undefined
+  })
   const value = filteredValues.find((e) => e.value === filterValue || undefined)
   return (
     <Select
