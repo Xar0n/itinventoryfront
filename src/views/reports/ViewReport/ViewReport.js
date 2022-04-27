@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/react'
+import {
+  CAccordion,
+  CAccordionBody,
+  CAccordionHeader,
+  CAccordionItem,
+  CButton,
+  CButtonGroup,
+  CCard,
+  CCardBody,
+  CCol,
+  CRow,
+} from '@coreui/react'
 import axios from 'axios'
 import TableFoundEquipment from './TableFoundEquipment'
 import Swal from 'sweetalert2'
@@ -78,7 +89,7 @@ const ViewReport = (props) => {
         Header: 'Группа',
         accessor: 'equipment_num.equipment.group.name',
       },
-      {
+      /*{
         Header: 'Фактическое количество',
         accessor: (d) => {
           return 1
@@ -94,7 +105,7 @@ const ViewReport = (props) => {
         accessor: (d) => {
           return 1
         },
-      },
+      },*/
     ],
     [],
   )
@@ -198,23 +209,38 @@ const ViewReport = (props) => {
               </CRow>
             </CRow>
           </CRow>
-          <CRow className={'mb-3'}>
-            <CCol sm={5}>
-              <h5 className="mb-3">Найденное оборудование</h5>
-            </CCol>
-          </CRow>
-          <TableFoundEquipment columns={columnsFound} data={foundEquipment} />
-          <CRow className={'mb-3'}>
-            <CCol sm={5}>
-              <h5 className="mb-3">Отсутствующее оборудование</h5>
-            </CCol>
-          </CRow>
-          <CRow className={'mb-3'}>
-            <CCol sm={5}>
-              <h5 className="mb-3">Излишки оборудования</h5>
-            </CCol>
-          </CRow>
-          <TableFindEquipment columns={columnsFind} data={findEquipment} />
+          <CAccordion className="mb-5" alwaysOpen activeItemKey={1}>
+            <CAccordionItem itemKey={1}>
+              <CAccordionHeader>
+                <h5>Найденное оборудование</h5>
+              </CAccordionHeader>
+              <CAccordionBody>
+                <TableFoundEquipment columns={columnsFound} data={foundEquipment} />
+              </CAccordionBody>
+            </CAccordionItem>
+            <CAccordionItem itemKey={2}>
+              <CAccordionHeader>
+                <h5>Отсутствующее оборудование</h5>
+              </CAccordionHeader>
+              <CAccordionBody>
+                <TableLostEquipment columns={columnsFound} data={lostEquipment} />
+              </CAccordionBody>
+            </CAccordionItem>
+            <CAccordionItem itemKey={3}>
+              <CAccordionHeader>
+                <h5>Излишки оборудования</h5>
+              </CAccordionHeader>
+              <CAccordionBody>
+                <TableFindEquipment columns={columnsFind} data={findEquipment} />
+              </CAccordionBody>
+            </CAccordionItem>
+            <CAccordionItem itemKey={4}>
+              <CAccordionHeader>
+                <h5>Результат</h5>
+              </CAccordionHeader>
+              <CAccordionBody></CAccordionBody>
+            </CAccordionItem>
+          </CAccordion>
         </CCardBody>
       </CCard>
     </>

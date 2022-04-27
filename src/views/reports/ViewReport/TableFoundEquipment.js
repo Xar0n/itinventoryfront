@@ -51,7 +51,7 @@ function TableFoundEquipment({ columns, data }) {
               </>
             )
           })}
-          {footerGroups.map((group) => (
+          {/*footerGroups.map((group) => (
             // eslint-disable-next-line react/jsx-key
             <CTableRow {...group.getFooterGroupProps()}>
               {group.headers.map((column) => (
@@ -61,7 +61,7 @@ function TableFoundEquipment({ columns, data }) {
                 </CTableDataCell>
               ))}
             </CTableRow>
-          ))}
+          ))*/}
         </CTableBody>
       </CTable>
     </>

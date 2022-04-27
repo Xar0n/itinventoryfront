@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import {
+  CAccordion,
+  CAccordionBody,
+  CAccordionHeader,
+  CAccordionItem,
   CButton,
   CButtonGroup,
   CCard,
@@ -122,137 +126,137 @@ const ViewEquipment = (props) => {
               <strong className="col-sm-3 mb-3">Данное оборудование списано</strong>
             )}
           </CRow>
-          <h5 className="mb-3">Основная информация</h5>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Инвентарный номер:</div>
-            <div className="col-sm-10">{equipment.equipment?.inventory_number?.number}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Штрих-код:</div>
-            <div className="col-sm-10">{equipment.barcode?.code}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Наименование:</div>
-            <div className="col-sm-10">{equipment.equipment?.config_item.name}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Вид:</div>
-            <div className="col-sm-10">{equipment.equipment?.view?.name}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Сорт:</div>
-            <div className="col-sm-10">{equipment.equipment?.grade?.name}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Группа:</div>
-            <div className="col-sm-10">{equipment.equipment?.group?.name}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Сотрудник:</div>
-            <div className="col-sm-10">{equipment.employee?.full_name}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Дата добавления:</div>
-            <div className="col-sm-10">{showDate(equipment.created_at)}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Дата обновления:</div>
-            <div className="col-sm-10">{showDate(equipment.updated_at)}</div>
-          </CRow>
-          <CRow className="mb-4">
-            <div className="col-sm-2">Дата актуализации:</div>
-            <div className="col-sm-10">{showDate(equipment.inventory_date)}</div>
-          </CRow>
-          <h5 className="mb-3">Местоположение</h5>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Организация:</div>
-            <div className="col-sm-10">{equipment?.organization.name}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Адрес:</div>
-            <div className="col-sm-10">{equipment.room.address.name}</div>
-          </CRow>
-          <CRow className="mb-3">
-            <div className="col-sm-2">Склад/кабинет:</div>
-            <div className="col-sm-10">{equipment.room.storage}</div>
-          </CRow>
-          <CRow className="mb-4">
-            <div className="col-sm-2">Доп.инф.:</div>
-            <div className="col-sm-10">{equipment.location}</div>
-          </CRow>
-          <CRow className="mb-5">
-            {Boolean(equipment.used) && showWriteoff && (
-              <CForm onSubmit={writeOffEquipmentSubmit}>
-                <h5 className="mb-3">Списание</h5>
+          <CAccordion className="mb-5" alwaysOpen activeItemKey={1}>
+            <CAccordionItem itemKey={1}>
+              <CAccordionHeader>
+                <h5 className="mb-3">Основная информация</h5>
+              </CAccordionHeader>
+              <CAccordionBody>
                 <CRow className="mb-3">
-                  <div className="col-sm-2">
-                    Подтвердите списание:
-                    <span className={'main-color'}>*</span>
-                  </div>
-                  <div className="col-sm-8">
-                    <CFormCheck onChange={handleInput} id="flexCheckDefault" name="used" />
-                  </div>
+                  <div className="col-sm-2">Инвентарный номер:</div>
+                  <div className="col-sm-10">{equipment.equipment?.inventory_number?.number}</div>
                 </CRow>
                 <CRow className="mb-3">
-                  <CFormLabel htmlFor={'selectObject'} className="col-sm-2 col-form-label">
-                    Причина:
-                    <span className={'main-color'}>*</span>
-                  </CFormLabel>
-                  <div className="col-sm-8">
-                    <CreatableSelect
-                      placeholder={'Введите или выберите причину списания'}
-                      name="reasonWriteOff"
-                      id="selectReasonWriteOff"
-                      value={writeOffSelect['reasonWriteOff']}
-                      onChange={handleSelect}
-                      options={writeOffList}
-                    />
-                  </div>
+                  <div className="col-sm-2">Штрих-код:</div>
+                  <div className="col-sm-10">{equipment.barcode?.code}</div>
                 </CRow>
-                <CCol sm={12} className="d-none d-md-block">
-                  <CButtonGroup className="float-start">
-                    <CButton
-                      type={'submit'}
-                      color="dark"
-                      variant="outline"
-                      className="float-start btn-select"
-                    >
-                      Списать
-                    </CButton>
-                    <CButton
-                      onClick={changeShowWriteOff}
-                      color="dark"
-                      variant="outline"
-                      className="float-start btn-select mx-4"
-                    >
-                      Отменить
-                    </CButton>
-                  </CButtonGroup>
-                </CCol>
-              </CForm>
-            )}
-            {Boolean(equipment.used) && !showWriteoff && (
-              <CCol sm={12} className="d-none d-md-block">
-                <CButton
-                  onClick={changeShowWriteOff}
-                  color="dark"
-                  variant="outline"
-                  className="float-start btn-select"
-                >
-                  Списать
-                </CButton>
-              </CCol>
-            )}
-            {!Boolean(equipment.used) && (
-              <CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Наименование:</div>
+                  <div className="col-sm-10">{equipment.equipment?.config_item.name}</div>
+                </CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Вид:</div>
+                  <div className="col-sm-10">{equipment.equipment?.view?.name}</div>
+                </CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Сорт:</div>
+                  <div className="col-sm-10">{equipment.equipment?.grade?.name}</div>
+                </CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Группа:</div>
+                  <div className="col-sm-10">{equipment.equipment?.group?.name}</div>
+                </CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Сотрудник:</div>
+                  <div className="col-sm-10">{equipment.employee?.full_name}</div>
+                </CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Дата добавления:</div>
+                  <div className="col-sm-10">{showDate(equipment.created_at)}</div>
+                </CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Дата обновления:</div>
+                  <div className="col-sm-10">{showDate(equipment.updated_at)}</div>
+                </CRow>
+                <CRow>
+                  <div className="col-sm-2">Дата актуализации:</div>
+                  <div className="col-sm-10">{showDate(equipment.inventory_date)}</div>
+                </CRow>
+              </CAccordionBody>
+            </CAccordionItem>
+            <CAccordionItem itemKey={2}>
+              <CAccordionHeader>
+                <h5 className="mb-3">Местоположение</h5>
+              </CAccordionHeader>
+              <CAccordionBody>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Организация:</div>
+                  <div className="col-sm-10">{equipment?.organization.name}</div>
+                </CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Адрес:</div>
+                  <div className="col-sm-10">{equipment.room.address.name}</div>
+                </CRow>
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Склад/кабинет:</div>
+                  <div className="col-sm-10">{equipment.room.storage}</div>
+                </CRow>
+                <CRow>
+                  <div className="col-sm-2">Доп.инф.:</div>
+                  <div className="col-sm-10">{equipment.location}</div>
+                </CRow>
+              </CAccordionBody>
+            </CAccordionItem>
+            <CAccordionItem itemKey={3}>
+              <CAccordionHeader>
                 <h5 className="mb-3">Списание</h5>
-                <div className="col-sm-2">Причина:</div>
-                <div className="col-sm-10">
-                  {reason === undefined ? equipment?.reason_writeoff?.name : reason}
-                </div>
-              </CRow>
-            )}
-          </CRow>
+              </CAccordionHeader>
+              <CAccordionBody>
+                <CRow>
+                  {Boolean(equipment.used) && (
+                    <CForm onSubmit={writeOffEquipmentSubmit}>
+                      <CRow className="mb-3">
+                        <div className="col-sm-2">
+                          Подтвердите списание:
+                          <span className={'main-color'}>*</span>
+                        </div>
+                        <div className="col-sm-8">
+                          <CFormCheck onChange={handleInput} id="flexCheckDefault" name="used" />
+                        </div>
+                      </CRow>
+                      <CRow className="mb-3">
+                        <CFormLabel htmlFor={'selectObject'} className="col-sm-2 col-form-label">
+                          Причина:
+                          <span className={'main-color'}>*</span>
+                        </CFormLabel>
+                        <div className="col-sm-8">
+                          <CreatableSelect
+                            placeholder={'Введите или выберите причину списания'}
+                            name="reasonWriteOff"
+                            id="selectReasonWriteOff"
+                            value={writeOffSelect['reasonWriteOff']}
+                            onChange={handleSelect}
+                            options={writeOffList}
+                          />
+                        </div>
+                      </CRow>
+                      <CCol sm={12} className="d-none d-md-block">
+                        <CButtonGroup className="float-start">
+                          <CButton
+                            type={'submit'}
+                            color="dark"
+                            variant="outline"
+                            className="float-start btn-select"
+                          >
+                            Списать
+                          </CButton>
+                        </CButtonGroup>
+                      </CCol>
+                    </CForm>
+                  )}
+                  {!Boolean(equipment.used) && (
+                    <CRow>
+                      <h5 className="mb-3">Списание</h5>
+                      <div className="col-sm-2">Причина:</div>
+                      <div className="col-sm-10">
+                        {reason === undefined ? equipment?.reason_writeoff?.name : reason}
+                      </div>
+                    </CRow>
+                  )}
+                </CRow>
+              </CAccordionBody>
+            </CAccordionItem>
+          </CAccordion>
           <CRow className="mb-3">
             <CCol sm={12} className="d-none d-md-block">
               <CButtonGroup className="float-start">

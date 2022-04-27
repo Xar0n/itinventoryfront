@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Select from 'react-select'
 import { useAsyncDebounce } from 'react-table'
-import { CFormInput } from '@coreui/react'
+import { CFormCheck, CFormInput } from '@coreui/react'
 import { arrUnique } from '../../../components/Functions'
 
 // eslint-disable-next-line react/prop-types
@@ -77,6 +77,8 @@ export function CheckBoxColumnFilter({ column: { filterValue, setFilter, preFilt
   }
   const value = filteredValues.find((e) => e.value === filterValue || undefined)
   return (
+    <CFormCheck id="flexCheckDefault" name="used" />
+    /*
     <Select
       isSearchable={false}
       value={value}
@@ -89,6 +91,6 @@ export function CheckBoxColumnFilter({ column: { filterValue, setFilter, preFilt
         }
       }}
       options={filteredValues}
-    />
+    />*/
   )
 }

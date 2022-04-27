@@ -93,15 +93,15 @@ function TableEquipment({ columns, data }) {
   if (globalFilter) {
     dispath(setSearchFilter(globalFilter))
   }
-  const org = filters.find((e) => e.id === 'equipment.organization.name')
+  const org = filters.find((e) => e.id === 'organization.name')
   if (org) {
     dispath(setOrganizationFilter(org.value))
   }
-  const adr = filters.find((e) => e.id === 'equipment.room.address.name')
+  const adr = filters.find((e) => e.id === 'room.address.name')
   if (adr) {
     dispath(setAddressFilter(adr.value))
   }
-  const stor = filters.find((e) => e.id === 'equipment.room.storage')
+  const stor = filters.find((e) => e.id === 'room.storage')
   if (stor) {
     dispath(setStorageFilter(stor.value))
   }
@@ -145,10 +145,12 @@ function TableEquipment({ columns, data }) {
                   {objectGroup.canFilter ? objectGroup.render('Filter') : null}
                 </CDropdownItemPlain>
                 <CDropdownItemPlain>
-                  <div>Показать используемое:</div>
-                </CDropdownItemPlain>
-                <CDropdownItemPlain>
-                  {objectUsed.canFilter ? objectUsed.render('Filter') : null}
+                  <CRow>
+                    <CFormLabel className={'col-sm-8'}>Показать используемое: </CFormLabel>
+                    <div className={'col-sm-auto'}>
+                      {objectUsed.canFilter ? objectUsed.render('Filter') : null}{' '}
+                    </div>
+                  </CRow>
                 </CDropdownItemPlain>
               </CDropdownMenu>
             </CDropdown>

@@ -77,6 +77,10 @@ const ViewList = (props) => {
         Header: 'Местоположение',
         columns: [
           {
+            Header: 'Хранилище',
+            accessor: 'room.storage',
+          },
+          {
             Header: 'Доп.инф.',
             accessor: 'equipment_num.location',
           },

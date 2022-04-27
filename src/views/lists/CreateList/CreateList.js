@@ -74,7 +74,7 @@ const CreateList = (props) => {
       formData.append('inventory_reason_id', inventory_reason)
     formData.append('organization_id', organization_id)
     formData.append('address_id', address_id)
-    formData.append('storage_id', storage_id)
+    if (storage !== '') formData.append('storage_id', storage_id)
     formData.append('base_id', base_id)
     formData.append(
       'base_datetime',
@@ -117,22 +117,22 @@ const CreateList = (props) => {
       if (res.data.status === 200) {
         setSelectAddress(res.data.address)
         const adr = res.data.address
-        axios.get(`api/one-storage/${storage}/${adr.value}`).then((res) => {
-          if (res.data.status === 200) {
-            let storage = res.data.storage
-            storage['label'] = storage['storage']
-            setSelectStorage(storage)
-            setLoading(false)
-          }
-        })
+        if (storage !== '') {
+          axios.get(`api/one-storage/${storage}/${adr.value}`).then((res) => {
+            if (res.data.status === 200) {
+              let storage = res.data.storage
+              setSelectStorage(storage)
+              setLoading(false)
+            } else {
+            }
+          })
+        } else setLoading(false)
       }
     })
     axios.get(`api/one-organization/${organization}`).then((res) => {
-      console.log(res.data)
       if (res.data.status === 200) {
         setSelectOrganization(res.data.organization)
         const org = res.data.organization
-        console.log(org)
         axios.get(`api/all-mols/${org.value}`).then((res) => {
           if (res.data.status === 200) {
             setMolList(res.data.mols)
@@ -214,12 +214,12 @@ const CreateList = (props) => {
                   name="mol_ids"
                   id="selectMol"
                   isClearable
-                  options={molList}
                   value={selectMol}
+                  options={molList}
                   onChange={(e) => {
                     setSelectMol(e)
                   }}
-                  placeholder="Выберите материально ответственных лиц"
+                  placeholder={'Выберите материально ответственных лиц'}
                 />
               </div>
             </CRow>
@@ -299,7 +299,6 @@ const CreateList = (props) => {
               </div>
               <div className="col-sm-auto">
                 <CFormInput
-                  type={'number'}
                   id={'inputBaseNumber'}
                   placeholder="Введите номер основания"
                   aria-label="Номер основания"
@@ -353,21 +352,23 @@ const CreateList = (props) => {
                 />
               </div>
             </CRow>
-            <CRow className="mb-3">
-              <div className="col-sm-2 col-form-label">
-                Склад/кабинет:<span className={'main-color'}>*</span>
-              </div>
-              <div className="col-sm-8">
-                <Select
-                  options={[selectStorage]}
-                  value={selectStorage}
-                  name="storage_id"
-                  id="selectStorage"
-                  isClearable
-                  isDisabled={true}
-                />
-              </div>
-            </CRow>
+            {storage !== '' && (
+              <CRow className="mb-3">
+                <div className="col-sm-2 col-form-label">
+                  Склад/кабинет:<span className={'main-color'}>*</span>
+                </div>
+                <div className="col-sm-8">
+                  <Select
+                    options={[selectStorage]}
+                    value={selectStorage}
+                    name="storage_id"
+                    id="selectStorage"
+                    isClearable
+                    isDisabled={true}
+                  />
+                </div>
+              </CRow>
+            )}
             <CRow className="mb-5">
               <div className="col-sm-2 col-form-label">
                 Причина:<span className={'main-color'}>*</span>

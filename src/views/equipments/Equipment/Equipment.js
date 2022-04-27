@@ -39,8 +39,8 @@ const Equipment = () => {
     const e_storage = isEmpty(state.storage)
     if (e_org) errors.push(' организацию в фильтре "Использование"')
     if (e_adr) errors.push(' адрес в фильтре "Местоположение"')
-    if (e_storage) errors.push(' склад/кабинет в фильтре "Местоположение"')
-    if (!e_org && !e_adr && !e_storage) {
+    //if (e_storage) errors.push(' склад/кабинет в фильтре "Местоположение"')
+    if (!e_org && !e_adr) {
       history.push('/list/create')
     } else {
       Swal.fire('Инвентаризация', 'Выберите ' + errors.toString(), 'error')
@@ -104,17 +104,17 @@ const Equipment = () => {
         columns: [
           {
             Header: 'Организация',
-            accessor: 'equipment.organization.name',
+            accessor: 'organization.name',
             disableFilters: false,
           },
           {
             Header: 'Адрес',
-            accessor: 'equipment.room.address.name',
+            accessor: 'room.address.name',
             disableFilters: false,
           },
           {
             Header: 'Хранилище',
-            accessor: 'equipment.room.storage',
+            accessor: 'room.storage',
             disableFilters: false,
           },
           {
