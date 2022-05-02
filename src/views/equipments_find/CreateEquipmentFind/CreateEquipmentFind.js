@@ -17,62 +17,59 @@ import Swal from 'sweetalert2'
 import { Link, useHistory } from 'react-router-dom'
 import { addKeyValue, isEmpty, arrUnique } from '../../../components/Functions'
 
-const CreateObject = () => {
+const CreateEquipmentFind = () => {
   const history = useHistory()
   const [loading, setLoading] = useState(true)
   const [inventoryNumberList, setInventoryNumberList] = useState([])
-  const [viewList, setViewList] = useState([])
-  const [gradeList, setGradeList] = useState([])
-  const [groupList, setGroupList] = useState([])
-  const [organizationList, setOrganizationList] = useState([])
   const [addressList, setAddressList] = useState([])
   const [storageList, setStorageList] = useState([])
   const [nameList, setNameList] = useState([])
   const [errorList, setErrorList] = useState([])
-  const [objectInput, setObjectInput] = useState({
+  const [equipmentFindInput, setEquipmentFindInput] = useState({
     inventory_number_id: '',
     inventory_number_id_create: '',
+    barcode: '',
     name_id: '',
-    name_id_create: '',
-    view_id: '',
-    view_id_create: '',
-    grade_id: '',
-    grade_id_create: '',
-    group_id: '',
-    group_id_create: '',
     organization_id: '',
     address_id: '',
     storage_id: '',
-    count: '',
   })
 
   const handleSelect = (value, action) => {
     if (action.action === 'create-option') {
-      setObjectInput({ ...objectInput, [action.name + '_create']: value.value, [action.name]: '' })
+      setEquipmentFindInput({
+        ...equipmentFindInput,
+        [action.name + '_create']: value.value,
+        [action.name]: '',
+      })
     } else if (action.action === 'select-option') {
-      setObjectInput({ ...objectInput, [action.name]: value.value, [action.name + '_create']: '' })
+      setEquipmentFindInput({
+        ...equipmentFindInput,
+        [action.name]: value.value,
+        [action.name + '_create']: '',
+      })
     }
   }
 
   const handleInput = (e) => {
     e.persist()
-    setObjectInput({ ...objectInput, [e.target.name]: e.target.value })
-    console.log(objectInput)
+    setEquipmentFindInput({ ...equipmentFindInput, [e.target.name]: e.target.value })
+    console.log(equipmentFindInput)
   }
 
   const storeObjectSubmit = (e) => {
     e.preventDefault()
     const formData = new FormData()
-    const inventory_number_id = objectInput.inventory_number_id
-    const inventory_number_id_create = objectInput.inventory_number_id_create
-    const name_id = objectInput.name_id
-    const name_id_create = objectInput.name_id_create
-    const view_id = objectInput.view_id
-    const view_id_create = objectInput.view_id_create
-    const grade_id = objectInput.grade_id
-    const grade_id_create = objectInput.grade_id_create
-    const group_id = objectInput.group_id
-    const group_id_create = objectInput.group_id_create
+    const inventory_number_id = equipmentFindInput.inventory_number_id
+    const inventory_number_id_create = equipmentFindInput.inventory_number_id_create
+    const name_id = equipmentFindInput.name_id
+    const name_id_create = equipmentFindInput.name_id_create
+    const view_id = equipmentFindInput.view_id
+    const view_id_create = equipmentFindInput.view_id_create
+    const grade_id = equipmentFindInput.grade_id
+    const grade_id_create = equipmentFindInput.grade_id_create
+    const group_id = equipmentFindInput.group_id
+    const group_id_create = equipmentFindInput.group_id_create
     if (isEmpty(inventory_number_id) && !isEmpty(inventory_number_id_create))
       formData.append('inventory_number_id_create', inventory_number_id_create)
     else if (!isEmpty(inventory_number_id))
@@ -89,10 +86,10 @@ const CreateObject = () => {
     if (isEmpty(group_id) && !isEmpty(grade_id_create))
       formData.append('group_id_create', group_id_create)
     else if (!isEmpty(group_id)) formData.append('group_id', group_id)
-    formData.append('organization_id', objectInput.organization_id)
-    formData.append('address_id', objectInput.address_id)
-    formData.append('storage_id', objectInput.storage_id)
-    formData.append('count', objectInput.count)
+    formData.append('organization_id', equipmentFindInput.organization_id)
+    formData.append('address_id', equipmentFindInput.address_id)
+    formData.append('storage_id', equipmentFindInput.storage_id)
+    formData.append('count', equipmentFindInput.count)
     axios.post('api/objects', formData).then((res) => {
       if (res.data.status === 200) {
         history.push('/object')
@@ -162,10 +159,10 @@ const CreateObject = () => {
   let filteredAddressList = addressList.filter((o) => {
     let links = o.links
     for (let i = 0; i < links.length; i++) {
-      return links[i] === objectInput.organization_id
+      return links[i] === equipmentFindInput.organization_id
     }
   })
-  let filteredStorageList = storageList.filter((o) => o.link === objectInput.address_id)
+  let filteredStorageList = storageList.filter((o) => o.link === equipmentFindInput.address_id)
 
   if (loading) {
     return (
@@ -359,4 +356,4 @@ const CreateObject = () => {
     </>
   )
 }
-export default CreateObject
+export default CreateEquipmentFind

@@ -78,12 +78,17 @@ const ViewList = (props) => {
         columns: [
           {
             Header: 'Хранилище',
-            accessor: 'room.storage',
+            accessor: 'equipment_num.room.storage',
           },
           {
             Header: 'Доп.инф.',
             accessor: 'equipment_num.location',
           },
+        ],
+      },
+      {
+        Header: 'Использование',
+        columns: [
           {
             Header: 'Сотрудник',
             accessor: 'equipment_num.employee.full_name',
@@ -145,6 +150,11 @@ const ViewList = (props) => {
             Header: 'Доп.инф.',
             accessor: 'location',
           },
+        ],
+      },
+      {
+        Header: 'Использование',
+        columns: [
           {
             Header: 'Сотрудник',
             accessor: 'employee.full_name',

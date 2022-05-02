@@ -28,6 +28,85 @@ const ViewReport = (props) => {
   const [lostEquipment, setLostEquipment] = useState([])
   const [findEquipment, setFindEquipment] = useState([])
   const [report, setReport] = useState([])
+  let columns = [
+    {
+      Header: 'Основное',
+      columns: [
+        {
+          Header: '№',
+          accessor: 'id',
+        },
+        {
+          Header: 'Название',
+          accessor: 'equipment_num.equipment.config_item.name',
+        },
+        {
+          Header: 'Инвентарный номер',
+          accessor: 'equipment_num.equipment.inventory_number.number',
+        },
+        {
+          Header: 'Штрих-код',
+          accessor: 'equipment_num.barcode.code',
+        },
+      ],
+    },
+    {
+      Header: 'Местоположение',
+      columns: [
+        {
+          Header: 'Доп.инф.',
+          accessor: 'equipment_num.location',
+        },
+        {
+          Header: 'Хранилище',
+          accessor: 'equipment_num.room.storage',
+        },
+      ],
+    },
+    {
+      Header: 'Использование',
+      columns: [
+        {
+          Header: 'Сотрудник',
+          accessor: 'equipment_num.employee.full_name',
+        },
+      ],
+    },
+    {
+      Header: 'Дополнительное',
+      columns: [
+        {
+          Header: 'Вид',
+          accessor: 'equipment_num.equipment.view.name',
+        },
+        {
+          Header: 'Сорт',
+          accessor: 'equipment_num.equipment.grade.name',
+        },
+        {
+          Header: 'Группа',
+          accessor: 'equipment_num.equipment.group.name',
+        },
+      ],
+    },
+    /*{
+      Header: 'Фактическое количество',
+      accessor: (d) => {
+        return 1
+      },
+      Footer: (info) => {
+        const total = React.useMemo(() => info.rows.reduce((sum, row) => 1 + sum, 0), [info.rows])
+
+        return <>Всего: {total}</>
+      },
+    },
+    {
+      Header: 'Количество по данным учета',
+      accessor: (d) => {
+        return 1
+      },
+    },*/
+  ]
   const report_created_at = new Date(report.created_at)
   useEffect(() => {
     axios.get(`/api/reports/${report_id}`).then((response) => {
@@ -47,68 +126,7 @@ const ViewReport = (props) => {
       setLoading(false)
     })
   }, [])
-  const columnsFound = React.useMemo(
-    () => [
-      {
-        Header: '№',
-        accessor: 'id',
-      },
-      {
-        Header: 'Название',
-        accessor: 'equipment_num.equipment.config_item.name',
-      },
-      {
-        Header: 'Инвентарный номер',
-        accessor: 'equipment_num.equipment.inventory_number.number',
-      },
-      {
-        Header: 'Штрих-код',
-        accessor: 'equipment_num.barcode.code',
-      },
-      {
-        Header: 'Хранилище',
-        accessor: 'equipment_num.equipment.room.storage',
-      },
-      {
-        Header: 'Доп.инф.',
-        accessor: 'equipment_num.location',
-      },
-      {
-        Header: 'Сотрудник',
-        accessor: 'equipment_num.employee.full_name',
-      },
-      {
-        Header: 'Вид',
-        accessor: 'equipment_num.equipment.view.name',
-      },
-      {
-        Header: 'Сорт',
-        accessor: 'equipment_num.equipment.grade.name',
-      },
-      {
-        Header: 'Группа',
-        accessor: 'equipment_num.equipment.group.name',
-      },
-      /*{
-        Header: 'Фактическое количество',
-        accessor: (d) => {
-          return 1
-        },
-        Footer: (info) => {
-          const total = React.useMemo(() => info.rows.reduce((sum, row) => 1 + sum, 0), [info.rows])
-
-          return <>Всего: {total}</>
-        },
-      },
-      {
-        Header: 'Количество по данным учета',
-        accessor: (d) => {
-          return 1
-        },
-      },*/
-    ],
-    [],
-  )
+  const columnsEquipment = React.useMemo(() => columns, [])
 
   const columnsFind = React.useMemo(
     () => [
@@ -196,10 +214,12 @@ const ViewReport = (props) => {
                 <div className="col-sm-2">Адрес:</div>
                 <div className="col-sm-10">{report.list.address?.name}</div>
               </CRow>
-              <CRow className="mb-3">
-                <div className="col-sm-2">Склад/кабинет:</div>
-                <div className="col-sm-10">{report.list.room?.storage}</div>
-              </CRow>
+              {report.list.room_id && (
+                <CRow className="mb-3">
+                  <div className="col-sm-2">Склад/кабинет:</div>
+                  <div className="col-sm-10">{report.list.room?.storage}</div>
+                </CRow>
+              )}
             </CRow>
             <CRow className="col-sm-4">
               <h5>Использованные фильтры</h5>
@@ -215,7 +235,7 @@ const ViewReport = (props) => {
                 <h5>Найденное оборудование</h5>
               </CAccordionHeader>
               <CAccordionBody>
-                <TableFoundEquipment columns={columnsFound} data={foundEquipment} />
+                <TableFoundEquipment columns={columnsEquipment} data={foundEquipment} />
               </CAccordionBody>
             </CAccordionItem>
             <CAccordionItem itemKey={2}>
@@ -223,7 +243,7 @@ const ViewReport = (props) => {
                 <h5>Отсутствующее оборудование</h5>
               </CAccordionHeader>
               <CAccordionBody>
-                <TableLostEquipment columns={columnsFound} data={lostEquipment} />
+                <TableLostEquipment columns={columnsEquipment} data={lostEquipment} />
               </CAccordionBody>
             </CAccordionItem>
             <CAccordionItem itemKey={3}>
