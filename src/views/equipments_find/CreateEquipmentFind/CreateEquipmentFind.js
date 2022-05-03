@@ -119,26 +119,6 @@ const CreateEquipmentFind = () => {
         setNameList(res.data.names)
       }
     })
-    axios.get('api/all-view').then((res) => {
-      if (res.data.status === 200) {
-        setViewList(res.data.views)
-      }
-    })
-    axios.get('api/all-grade').then((res) => {
-      if (res.data.status === 200) {
-        setGradeList(res.data.grades)
-      }
-    })
-    axios.get('api/all-group').then((res) => {
-      if (res.data.status === 200) {
-        setGroupList(res.data.groups)
-      }
-    })
-    axios.get('api/all-organization').then((res) => {
-      if (res.data.status === 200) {
-        setOrganizationList(res.data.organizations)
-      }
-    })
     axios.get('api/all-address').then((res) => {
       if (res.data.status === 200) {
         setAddressList(res.data.addresses)
@@ -212,70 +192,6 @@ const CreateEquipmentFind = () => {
                   options={nameList}
                   onChange={handleSelect}
                 />
-              </div>
-            </CRow>
-            <CRow className="mb-3">
-              <CFormLabel htmlFor={'selectView'} className="col-sm-2 col-form-label">
-                Вид:
-              </CFormLabel>
-              <div className="col-sm-10">
-                <CreatableSelect
-                  name="view_id"
-                  id="selectView"
-                  isClearable
-                  placeholder="Введите или выберите вид"
-                  onChange={handleSelect}
-                  options={viewList}
-                />
-              </div>
-            </CRow>
-            <CRow className="mb-3">
-              <CFormLabel htmlFor={'selectGrade'} className="col-sm-2 col-form-label">
-                Сорт:
-              </CFormLabel>
-              <div className="col-sm-10">
-                <CreatableSelect
-                  name="grade_id"
-                  id="selectGrade"
-                  isClearable
-                  placeholder="Введите или выберите сорт"
-                  onChange={handleSelect}
-                  options={gradeList}
-                />
-              </div>
-            </CRow>
-            <CRow className="mb-3">
-              <CFormLabel htmlFor={'selectGroup'} className="col-sm-2 col-form-label">
-                Группа:
-              </CFormLabel>
-              <div className="col-sm-10">
-                <CreatableSelect
-                  name="group_id"
-                  id="selectGroup"
-                  isClearable
-                  placeholder="Введите или выберите группу"
-                  onChange={handleSelect}
-                  options={groupList}
-                />
-              </div>
-            </CRow>
-            <CRow className="mb-3">
-              <CFormLabel htmlFor={'selectOrganization'} className="col-sm-2 col-form-label">
-                Организация:
-                <span className={'main-color'}>*</span>
-              </CFormLabel>
-              <div className="col-sm-10">
-                <Select
-                  name="organization_id"
-                  id="selectOrganization"
-                  isClearable
-                  placeholder="Выберите организацию"
-                  onChange={handleSelect}
-                  options={organizationList}
-                />
-                {errorList?.organization_id?.map(function (error) {
-                  return <li key={error}>{error}</li>
-                })}
               </div>
             </CRow>
             <CRow className="mb-3">

@@ -17,11 +17,15 @@ const List = React.lazy(() => import('./views/lists/List/List'))
 const CreateList = React.lazy(() => import('./views/lists/CreateList/CreateList'))
 const ViewList = React.lazy(() => import('./views/lists/ViewList/ViewList'))
 
-const ViewEquipmentFind = React.lazy(() => import('./views/equipments_find/ViewEquipmentFind'))
+const ViewEquipmentFind = React.lazy(() =>
+  import('./views/equipments_find/ViewEquipmentFind/ViewEquipmentFind'),
+)
+/*
 const CreateEquipmentFind = React.lazy(() =>
   import('./views/equipments_find/CreateEquipmentFind/CreateEquipmentFind'),
 )
 const EditEquipmentFind = React.lazy(() => import('./views/equipments_find/EditEquipmentFind'))
+*/
 
 const Report = React.lazy(() => import('./views/reports/Report/Report'))
 const ViewReport = React.lazy(() => import('./views/reports/ViewReport/ViewReport'))
@@ -39,13 +43,13 @@ const routes = [
   { path: '/list/create', name: 'Создание', component: CreateList, exact: true },
   { path: '/list/:id', exact: true, name: 'Просмотр', component: ViewList },
   {
-    path: '/list/:id/equipment-find/:id_eq',
-    name: 'Просмотр',
-    component: HistoryEquipment,
+    path: '/list/:id/:id_eq',
+    name: 'Просмотр найденного оборудования',
+    component: ViewEquipmentFind,
     exact: true,
   },
   {
-    path: '/list/:id/equipment-find/create',
+    path: '/list/:id/create',
     name: 'Создание',
     component: HistoryEquipment,
     exact: true,

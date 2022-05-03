@@ -159,7 +159,14 @@ function TableFindEquipment({ columns, data, list_id }) {
             prepareRow(row)
             return (
               // eslint-disable-next-line react/jsx-key
-              <CTableRow className={'link'} scope="row" {...row.getRowProps()}>
+              <CTableRow
+                className={'link'}
+                scope="row"
+                {...row.getRowProps()}
+                onClick={() => {
+                  history.push(`list/${row.values['list_id']}/${row.values['id']}`)
+                }}
+              >
                 {row.cells.map((cell) => {
                   return (
                     // eslint-disable-next-line react/jsx-key
