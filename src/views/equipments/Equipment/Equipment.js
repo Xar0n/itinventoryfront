@@ -15,10 +15,21 @@ const Equipment = () => {
   const history = useHistory()
   const credentialsButtonClick = (e) => {
     e.preventDefault()
+    const state = store.getState()
+    const org = state.organization
+    const adr = state.address
+    const storage = state.storage
+    const employee = state.employee
     axios({
-      url: 'api/equipments/export',
+      url: `api/equipments/export`,
       method: 'GET',
       responseType: 'blob',
+      params: {
+        organization: org,
+        address: adr,
+        storage: storage,
+        employee: employee,
+      },
     }).then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data], { type: 'blob' }))
       const link = document.createElement('a')
@@ -36,7 +47,7 @@ const Equipment = () => {
     const state = store.getState()
     const e_org = isEmpty(state.organization)
     const e_adr = isEmpty(state.address)
-    const e_storage = isEmpty(state.storage)
+    //const e_storage = isEmpty(state.storage)
     if (e_org) errors.push(' организацию в фильтре "Использование"')
     if (e_adr) errors.push(' адрес в фильтре "Местоположение"')
     //if (e_storage) errors.push(' склад/кабинет в фильтре "Местоположение"')

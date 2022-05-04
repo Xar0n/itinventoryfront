@@ -53,6 +53,7 @@ const EditEquipment = (props) => {
     if (barcode) data['barcode'] = barcode
     if (selectEmployee?.value) data['employee_id'] = selectEmployee?.value
     if (selectOrganization?.value) data['organization_id'] = selectOrganization?.value
+    if (selectAddress?.value) data['address_id'] = selectAddress?.value
     if (selectStorage?.value) data['storage_id'] = selectStorage?.value
     if (location) data['location'] = location
     data['object_id'] = selectObject.value
