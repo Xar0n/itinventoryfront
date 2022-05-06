@@ -18,6 +18,7 @@ import { Link, useHistory } from 'react-router-dom'
 import TableFindEquipment from './TableFindEquipment'
 import store from '../../../store'
 import TableLostEquipment from './TableLostEquipment'
+import { CChart } from '@coreui/react-chartjs'
 
 const ViewReport = (props) => {
   const history = useHistory()
@@ -27,7 +28,9 @@ const ViewReport = (props) => {
   const [foundEquipment, setFoundEquipment] = useState([])
   const [lostEquipment, setLostEquipment] = useState([])
   const [findEquipment, setFindEquipment] = useState([])
+  const [result, setResult] = useState([])
   const [report, setReport] = useState([])
+  let data_diagram = []
   let columns = [
     {
       Header: 'Основное',
@@ -118,6 +121,8 @@ const ViewReport = (props) => {
           setFoundEquipment(response.data.equipment_found)
           setLostEquipment(response.data.equipment_lost)
           setFindEquipment(response.data.equipment_find)
+          setResult(response.data.result)
+          // eslint-disable-next-line react-hooks/exhaustive-deps
         } else {
           history.push('/report')
           Swal.fire('Просмотр отчета', 'Ошибка формирования отчета', 'error')
@@ -167,6 +172,28 @@ const ViewReport = (props) => {
             accessor: 'employee.full_name',
           },
         ],
+      },
+    ],
+    [],
+  )
+
+  const columnsResult = React.useMemo(
+    () => [
+      {
+        Header: '',
+        accessor: 'result.count',
+      },
+      {
+        Header: 'Название',
+        accessor: 'config_item.name',
+      },
+      {
+        Header: 'Инвентарный номер',
+        accessor: 'inventory_number.number',
+      },
+      {
+        Header: 'Штрих-код',
+        accessor: 'barcode.code',
       },
     ],
     [],
@@ -258,7 +285,24 @@ const ViewReport = (props) => {
               <CAccordionHeader>
                 <h5>Результат</h5>
               </CAccordionHeader>
-              <CAccordionBody></CAccordionBody>
+              <CAccordionBody>
+                <CCol xs={8} md={4} xl={4}>
+                  <CRow>
+                    <CChart
+                      type="doughnut"
+                      data={{
+                        labels: ['Найдено', 'Отсутствует', 'Излишки'],
+                        datasets: [
+                          {
+                            backgroundColor: ['#41B883', '#DD1B16', '#00D8FF'],
+                            data: [result.count_found, result.count_lost, result.count_find],
+                          },
+                        ],
+                      }}
+                    />
+                  </CRow>
+                </CCol>
+              </CAccordionBody>
             </CAccordionItem>
           </CAccordion>
         </CCardBody>

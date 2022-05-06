@@ -20,10 +20,10 @@ const ViewList = React.lazy(() => import('./views/lists/ViewList/ViewList'))
 const ViewEquipmentFind = React.lazy(() =>
   import('./views/equipments_find/ViewEquipmentFind/ViewEquipmentFind'),
 )
-/*
 const CreateEquipmentFind = React.lazy(() =>
   import('./views/equipments_find/CreateEquipmentFind/CreateEquipmentFind'),
 )
+/*
 const EditEquipmentFind = React.lazy(() => import('./views/equipments_find/EditEquipmentFind'))
 */
 
@@ -43,21 +43,21 @@ const routes = [
   { path: '/list/create', name: 'Создание', component: CreateList, exact: true },
   { path: '/list/:id', exact: true, name: 'Просмотр', component: ViewList },
   {
+    path: '/list/:id/create',
+    name: 'Создание',
+    component: CreateEquipmentFind,
+    exact: true,
+  },
+  {
     path: '/list/:id/:id_eq',
     name: 'Просмотр найденного оборудования',
     component: ViewEquipmentFind,
     exact: true,
   },
   {
-    path: '/list/:id/create',
-    name: 'Создание',
-    component: HistoryEquipment,
-    exact: true,
-  },
-  {
     path: '/list/:id/equipment-find/edit/:id_eq',
     name: 'Редактирование',
-    component: HistoryEquipment,
+    component: CreateEquipmentFind,
     exact: true,
   },
   { path: '/report', name: 'Отчеты', component: Report, exact: true },

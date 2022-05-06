@@ -107,8 +107,14 @@ const ViewEquipmentFind = (props) => {
             <CCol sm={12} className="d-none d-md-block">
               <CButtonGroup className="float-start">
                 <Link
+                  to={`/list/${equipmentFind.list_id}`}
+                  className="btn btn-outline-dark btn-select"
+                >
+                  Назад
+                </Link>
+                <Link
                   to={`/object/edit/${equipmentFind.id}`}
-                  className="btn btn-outline-dark mx-0 btn-select"
+                  className="btn btn-outline-dark mx-4 btn-select"
                 >
                   Редактировать
                 </Link>

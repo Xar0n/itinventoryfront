@@ -299,7 +299,7 @@ const CreateObject = () => {
             </CRow>
             <CRow className="mb-3">
               <CFormLabel htmlFor={'selectStorage'} className="col-sm-2 col-form-label">
-                Склад / кабинет:
+                Хранилище:
                 <span className={'main-color'}>*</span>
               </CFormLabel>
               <div className="col-sm-10">
@@ -307,7 +307,7 @@ const CreateObject = () => {
                   name="storage_id"
                   id="selectStorage"
                   isClearable
-                  placeholder="Выберите склад/кабинет"
+                  placeholder="Выберите хранилище"
                   onChange={handleSelect}
                   options={filteredStorageList}
                 />

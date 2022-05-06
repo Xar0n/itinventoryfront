@@ -164,7 +164,7 @@ function TableFindEquipment({ columns, data, list_id }) {
                 scope="row"
                 {...row.getRowProps()}
                 onClick={() => {
-                  history.push(`list/${row.values['list_id']}/${row.values['id']}`)
+                  history.push(`/list/${list_id}/${row.values['id']}`)
                 }}
               >
                 {row.cells.map((cell) => {
