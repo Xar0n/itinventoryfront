@@ -4,6 +4,7 @@ import {
   CAccordionBody,
   CAccordionHeader,
   CAccordionItem,
+  CButton,
   CButtonGroup,
   CCard,
   CCardBody,
@@ -13,18 +14,28 @@ import {
 import axios from 'axios'
 import { Link, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import { showDate } from '../../../components/Functions'
+import { showDate, successMessageUserWithoutAccept } from '../../../components/Functions'
 
 const ViewEquipmentFind = (props) => {
   const [equipmentFind, setEquipmentFind] = useState([])
   const [loading, setLoading] = useState(true)
   const history = useHistory()
+  // eslint-disable-next-line react/prop-types
+  const equipment_find_id = props.match.params.id_eq
+  // eslint-disable-next-line react/prop-types
+  const list_id = props.match.params.id
+  const deleteEquipmentFindClick = (e) => {
+    e.preventDefault()
+    axios.delete(`api/equipments_finds/${equipmentFind.id}`).then((res) => {
+      if (res.data.status === 200) {
+        history.push(`/list/${list_id}`)
+        successMessageUserWithoutAccept(res.data.message)
+      } else {
+      }
+    })
+  }
   useEffect(() => {
     let isMounted = true
-    // eslint-disable-next-line react/prop-types
-    const equipment_find_id = props.match.params.id_eq
-    // eslint-disable-next-line react/prop-types
-    const list_id = props.match.params.id
     axios.get(`/api/equipments_finds/${equipment_find_id}`).then((response) => {
       if (isMounted) {
         if (response.data.status === 200) {
@@ -48,6 +59,7 @@ const ViewEquipmentFind = (props) => {
       </div>
     )
   }
+
   return (
     <>
       <CCard className="mb-5">
@@ -118,12 +130,14 @@ const ViewEquipmentFind = (props) => {
                 >
                   Редактировать
                 </Link>
-                <Link
-                  to={`/object/history/${equipmentFind.id}`}
-                  className="btn btn-outline-dark mx-4 btn-select"
+                <CButton
+                  onClick={deleteEquipmentFindClick}
+                  color="dark"
+                  variant="outline"
+                  className="btn-select"
                 >
                   Удалить
-                </Link>
+                </CButton>
               </CButtonGroup>
             </CCol>
           </CRow>

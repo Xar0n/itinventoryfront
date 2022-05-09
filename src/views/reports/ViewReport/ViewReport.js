@@ -19,18 +19,39 @@ import TableFindEquipment from './TableFindEquipment'
 import store from '../../../store'
 import TableLostEquipment from './TableLostEquipment'
 import { CChart } from '@coreui/react-chartjs'
+import TableResultReport from './TableResultReport'
 
 const ViewReport = (props) => {
+  const credentialsButtonClick = (e) => {
+    // eslint-disable-next-line react/prop-types
+    const report_id = props.match.params.id
+    e.preventDefault()
+    const state = store.getState()
+    axios({
+      url: `api/reports/export`,
+      method: 'GET',
+      responseType: 'blob',
+      params: {
+        report_id: report.id,
+      },
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'blob' }))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `report${report_id}.xlsx`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    })
+  }
   const history = useHistory()
-  // eslint-disable-next-line react/prop-types
-  const report_id = props.match.params.id
   const [loading, setLoading] = useState(true)
   const [foundEquipment, setFoundEquipment] = useState([])
   const [lostEquipment, setLostEquipment] = useState([])
   const [findEquipment, setFindEquipment] = useState([])
   const [result, setResult] = useState([])
   const [report, setReport] = useState([])
-  let data_diagram = []
+
   let columns = [
     {
       Header: 'Основное',
@@ -57,12 +78,12 @@ const ViewReport = (props) => {
       Header: 'Местоположение',
       columns: [
         {
-          Header: 'Доп.инф.',
-          accessor: 'equipment_num.location',
-        },
-        {
           Header: 'Хранилище',
           accessor: 'equipment_num.room.storage',
+        },
+        {
+          Header: 'Доп.инф.',
+          accessor: 'equipment_num.location',
         },
       ],
     },
@@ -112,23 +133,24 @@ const ViewReport = (props) => {
   ]
   const report_created_at = new Date(report.created_at)
   useEffect(() => {
+    // eslint-disable-next-line react/prop-types
+    const report_id = props.match.params.id
     axios.get(`/api/reports/${report_id}`).then((response) => {
       if (response.data.status === 200) {
         const in_works = response.data.report.list.in_works
         if (!in_works) {
           // eslint-disable-next-line react-hooks/rules-of-hooks,react-hooks/exhaustive-deps
           setReport(response.data.report)
-          setFoundEquipment(response.data.equipment_found)
-          setLostEquipment(response.data.equipment_lost)
-          setFindEquipment(response.data.equipment_find)
+          setFoundEquipment(response.data.equipments_found)
+          setLostEquipment(response.data.equipments_lost)
+          setFindEquipment(response.data.equipments_find)
           setResult(response.data.result)
-          // eslint-disable-next-line react-hooks/exhaustive-deps
+          setLoading(false)
         } else {
           history.push('/report')
           Swal.fire('Просмотр отчета', 'Ошибка формирования отчета', 'error')
         }
       }
-      setLoading(false)
     })
   }, [])
   const columnsEquipment = React.useMemo(() => columns, [])
@@ -180,25 +202,16 @@ const ViewReport = (props) => {
   const columnsResult = React.useMemo(
     () => [
       {
-        Header: '',
-        accessor: 'result.count',
-      },
-      {
         Header: 'Название',
-        accessor: 'config_item.name',
+        accessor: 'name',
       },
       {
-        Header: 'Инвентарный номер',
-        accessor: 'inventory_number.number',
-      },
-      {
-        Header: 'Штрих-код',
-        accessor: 'barcode.code',
+        Header: 'Результат',
+        accessor: 'count',
       },
     ],
     [],
   )
-
   if (loading) {
     return (
       <div className="pt-3 text-center">
@@ -224,7 +237,12 @@ const ViewReport = (props) => {
                 <CButton variant={'outline'} color="dark" className="mx-1 btn-select">
                   Печать
                 </CButton>
-                <CButton variant={'outline'} color="dark" className="mx-1 btn-select">
+                <CButton
+                  onClick={credentialsButtonClick}
+                  variant={'outline'}
+                  color="dark"
+                  className="mx-1 btn-select"
+                >
                   Экспортировать
                 </CButton>
               </CButtonGroup>
@@ -286,22 +304,25 @@ const ViewReport = (props) => {
                 <h5>Результат</h5>
               </CAccordionHeader>
               <CAccordionBody>
-                <CCol xs={8} md={4} xl={4}>
-                  <CRow>
+                <CRow className={'align-items-center'}>
+                  <div className={'col-sm-4'}>
                     <CChart
                       type="doughnut"
                       data={{
-                        labels: ['Найдено', 'Отсутствует', 'Излишки'],
+                        labels: [result[1].name, result[2].name, result[3].name],
                         datasets: [
                           {
                             backgroundColor: ['#41B883', '#DD1B16', '#00D8FF'],
-                            data: [result.count_found, result.count_lost, result.count_find],
+                            data: [result[1].count, result[2].count, result[3].count],
                           },
                         ],
                       }}
                     />
-                  </CRow>
-                </CCol>
+                  </div>
+                  <div className={'col-sm-8'}>
+                    <TableResultReport columns={columnsResult} data={result} />
+                  </div>
+                </CRow>
               </CAccordionBody>
             </CAccordionItem>
           </CAccordion>
