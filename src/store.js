@@ -8,6 +8,8 @@ const SET_ADDRESS = 'set_address'
 const SET_STORAGE = 'set_storage'
 const SET_USER = 'set_user'
 const SET_RESULT_INVENTORY = 'set_result_inventory'
+const SET_BARCODE_GENERATE = 'set_barcode_generate'
+const SET_BARCODE_PRINT = 'set_barcode_print'
 const RESET_FILTERS = 'reset_filters'
 
 const initialState = {
@@ -20,13 +22,31 @@ const initialState = {
   storage: '',
   user: '',
   result_inventory: [],
+  barcode_generate: [],
+  barcode_print: [],
+}
+
+export function setBarcodeGenerate(data) {
+  return {
+    type: SET_BARCODE_GENERATE,
+    payload: data,
+    info: 'Задать значение штрихкодов для формирования',
+  }
+}
+
+export function setBarcodePrint(data) {
+  return {
+    type: SET_BARCODE_PRINT,
+    payload: data,
+    info: 'Задать значение штрихкодов для печати',
+  }
 }
 
 export function setResultInventory(data) {
   return {
     type: SET_RESULT_INVENTORY,
     payload: data,
-    info: 'Задать значение результата проведенной инвентаризации',
+    info: 'Задать значение результатов проведенной инвентаризации',
   }
 }
 
@@ -109,6 +129,10 @@ const changeStateReducer = (state = initialState, action) => {
       return { ...state, storage: action.payload }
     case SET_RESULT_INVENTORY:
       return { ...state, result_inventory: action.payload }
+    case SET_BARCODE_GENERATE:
+      return { ...state, barcode_generate: action.payload }
+    case SET_BARCODE_PRINT:
+      return { ...state, barcode_print: action.payload }
     case SET_USER:
       return { ...state, user: action.payload }
     case RESET_FILTERS:

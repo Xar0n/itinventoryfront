@@ -23,6 +23,10 @@ const ViewEquipmentFind = React.lazy(() =>
 const CreateEquipmentFind = React.lazy(() =>
   import('./views/equipments_find/CreateEquipmentFind/CreateEquipmentFind'),
 )
+
+const GenerateBarcode = React.lazy(() =>
+  import('./views/generate_barcode/GenerateBarcode/GenerateBarcode'),
+)
 /*
 const EditEquipmentFind = React.lazy(() => import('./views/equipments_find/EditEquipmentFind'))
 */
@@ -62,6 +66,20 @@ const routes = [
   },
   { path: '/report', name: 'Отчеты', component: Report, exact: true },
   { path: '/report/:id', exact: true, name: 'Просмотр', component: ViewReport },
+
+  {
+    path: '/generate-barcode',
+    exact: true,
+    name: 'Формирование штрих-кодов',
+    component: GenerateBarcode,
+  },
+
+  {
+    path: '/pring-barcode',
+    exact: true,
+    name: 'Печать штрих-кодов',
+    component: GenerateBarcode,
+  },
 ]
 
 export default routes

@@ -128,7 +128,6 @@ function TableInventoryEquipment({ columns, data }) {
   )
 
   const { globalFilter, pageIndex, pageSize } = state
-  dispath(setSearchFilter('4566'))
   dispath(setResultInventory(selectedFlatRows))
   return (
     <>

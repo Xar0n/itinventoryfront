@@ -6,9 +6,10 @@ import {
   cilFindInPage,
   cilInbox,
   cilLaptop,
+  cilLibraryAdd,
   cilPrint,
 } from '@coreui/icons'
-import { CNavItem } from '@coreui/react'
+import { CNavGroup, CNavItem } from '@coreui/react'
 
 const _nav = [
   {
@@ -36,16 +37,23 @@ const _nav = [
     icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
   },
   {
-    component: CNavItem,
-    name: 'Генерация штрих-кодов',
-    to: '/generate-barcode',
+    component: CNavGroup,
+    name: 'Штрихкоды',
     icon: <CIcon icon={cilBarcode} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Печать штрих-кодов',
-    to: '/print-barcode',
-    icon: <CIcon icon={cilPrint} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Формирование',
+        to: '/generate-barcode',
+        icon: <CIcon icon={cilLibraryAdd} customClassName="nav-icon" />,
+      },
+      {
+        component: CNavItem,
+        name: 'Печать',
+        to: '/print-barcode',
+        icon: <CIcon icon={cilPrint} customClassName="nav-icon" />,
+      },
+    ],
   },
 ]
 
