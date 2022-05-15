@@ -27,6 +27,8 @@ const CreateEquipmentFind = React.lazy(() =>
 const GenerateBarcode = React.lazy(() =>
   import('./views/generate_barcode/GenerateBarcode/GenerateBarcode'),
 )
+
+const PrintBarcode = React.lazy(() => import('./views/print_barcode/PrintBarcode/PrintBarcode'))
 /*
 const EditEquipmentFind = React.lazy(() => import('./views/equipments_find/EditEquipmentFind'))
 */
@@ -69,16 +71,14 @@ const routes = [
 
   {
     path: '/generate-barcode',
-    exact: true,
-    name: 'Формирование штрих-кодов',
+    name: 'Формирование штрихкодов',
     component: GenerateBarcode,
   },
 
   {
-    path: '/pring-barcode',
-    exact: true,
-    name: 'Печать штрих-кодов',
-    component: GenerateBarcode,
+    path: '/print-barcode',
+    name: 'Печать штрихкодов',
+    component: PrintBarcode,
   },
 ]
 

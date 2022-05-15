@@ -19,3 +19,49 @@
 .ul {
   min-width: 20rem;
 }
+
+
+
+.b-sticker {
+  padding: 3mm;
+  float: left;
+  font-family: Arial, serif;
+  border: 1px dashed black;
+  page-break-inside: avoid;
+}
+.b-sticker table {
+  border-collapse: collapse;
+}
+.b-sticker tr td {
+  padding: 2mm;
+}
+.b-sticker tr:first-child td {
+  border-bottom: 1mm solid #000;
+}
+.b-sticker tr td p {
+  margin: 0;
+  padding-bottom: 1mm;
+}
+
+/* Штрихкод код PHP*/
+.barcode {
+}
+
+/* Размеры шрифтов */
+.b-sticker .seller {
+  font-size: 4mm;
+}
+.b-sticker .number {
+  font-size: 6mm;
+}
+.b-sticker .customer-info {
+  font-size: 3.8mm;
+}
+.b-sticker .customer-info .date,
+.b-sticker .customer-info .price,
+.b-sticker .customer-info .name,
+.b-sticker .customer-info .phone {
+}
+.b-sticker .punkt-info {
+  font-size: 3.5mm;
+}

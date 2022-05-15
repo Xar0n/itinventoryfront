@@ -2,7 +2,7 @@ import React from 'react'
 import { CFormCheck } from '@coreui/react'
 
 // eslint-disable-next-line react/prop-types,react/display-name
-export const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }, ref) => {
+const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }, ref) => {
   const defaultRef = React.useRef()
   const resolvedRef = ref || defaultRef
 
@@ -16,3 +16,5 @@ export const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest 
     </>
   )
 })
+
+export default IndeterminateCheckbox

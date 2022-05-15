@@ -32,7 +32,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { GlobalFilter, SelectColumnFilter } from '../../equipments/Equipment/FiltersEquipment'
 import { IndeterminateCheckbox } from '../../../components'
-import { setBarcodeGenerate } from '../../../store'
+import { setBarcodePrint } from '../../../store'
 function objectByHeader(array, header) {
   let index = array.findIndex(function (item, i) {
     return item.Header === header
@@ -40,7 +40,7 @@ function objectByHeader(array, header) {
   return array[index]
 }
 // eslint-disable-next-line react/prop-types
-function TableGenerateBarcode({ columns, data }) {
+function TablePrintBarcode({ columns, data }) {
   const history = useHistory()
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const defaultColumn = React.useMemo(
@@ -115,7 +115,7 @@ function TableGenerateBarcode({ columns, data }) {
   const objectGrade = objectByHeader(allColumns, 'Сорт')
   const objectGroup = objectByHeader(allColumns, 'Группа')
   const objectUsed = objectByHeader(allColumns, 'Использование')
-  dispath(setBarcodeGenerate(selectedFlatRows))
+  dispath(setBarcodePrint(selectedFlatRows))
   return (
     <>
       <CRow className={'mb-3'}>
@@ -307,4 +307,4 @@ function TableGenerateBarcode({ columns, data }) {
   )
 }
 
-export default TableGenerateBarcode
+export default TablePrintBarcode

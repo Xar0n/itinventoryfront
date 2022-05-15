@@ -28,26 +28,7 @@ import _, { isNull } from 'underscore'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import store, { setResultInventory, setSearchFilter } from '../../../store'
-import { IndeterminateCheckbox } from './Checkbox'
-
-function arrUnique(arr) {
-  var cleaned = []
-  arr.forEach(function (itm) {
-    var unique = true
-    cleaned.forEach(function (itm2) {
-      if (_.isEqual(itm, itm2)) unique = false
-    })
-    if (unique) cleaned.push(itm)
-  })
-  return cleaned
-}
-
-function objectByHeader(array, header) {
-  let index = array.findIndex(function (item, i) {
-    return item.Header === header
-  })
-  return array[index]
-}
+import { IndeterminateCheckbox } from '../../../components'
 
 // eslint-disable-next-line react/prop-types
 function GlobalFilter({ preGlobalFilteredRows, filter, setFilter }) {
